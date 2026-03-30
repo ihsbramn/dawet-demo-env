@@ -14,11 +14,7 @@ helm:
  valuesFiles:
    - values-grafana.yaml
 
-dependsOn:
- - selector:
-     matchLabels:
-       bundle: namespaces
-
+ 
 targetCustomizations:
  - name: dev
    clusterSelector:

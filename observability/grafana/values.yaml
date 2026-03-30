@@ -24,6 +24,7 @@ grafana.ini:
     password: admin-db-123
   unified_alerting:
     enabled: true
+assertNoLeakedSecrets: false
 
 ## Pre-configured Datasources
 datasources:

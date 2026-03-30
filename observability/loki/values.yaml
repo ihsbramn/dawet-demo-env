@@ -13,17 +13,15 @@ loki:
     replication_factor: 1
     
   storage:
-    type: s3
-    s3:
-      endpoint: minio.minio-system.svc:9000
-      bucketNames:
-        chunks: loki-chunks
-        ruler: loki-ruler
-        admin: loki-admin
-      accessKeyId: minio-admin
-      secretAccessKey: minio-secret-123
-      s3ForcePathStyle: true
-      insecure: true
+    type: filesystem
+  storage_config:
+    filesystem:
+      directory: /data/loki/chunks
+    boltdb_shipper:
+      active_index_directory: /data/loki/index
+      cache_location: /data/loki/cache
+      resync_interval: 5s
+      shared_store: filesystem
 
 singleBinary:
   replicas: 1

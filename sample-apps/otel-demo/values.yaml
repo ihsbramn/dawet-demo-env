@@ -1,8 +1,5 @@
 # =============================================================================
-# OpenTelemetry Demo - Helm Values
-# =============================================================================
-# Generates traces, metrics, and logs for validation
-# Routes telemetry to Alloy collector
+# OpenTelemetry Demo - Helm Values (v0.40.6)
 # =============================================================================
 
 default:
@@ -11,13 +8,6 @@ default:
       value: "http://alloy.observability.svc:4317"
     - name: OTEL_EXPORTER_OTLP_PROTOCOL
       value: "grpc"
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 50m
-      memory: 64Mi
 
 ## Disable built-in collectors (using Alloy instead)
 opentelemetry-collector:
@@ -30,14 +20,10 @@ prometheus:
   enabled: false
 grafana:
   enabled: false
-
-# Disable extra non-demo features
-featureFlags:
-  enabled: false
-kafka:
+opensearch:
   enabled: false
 
-## Enable frontend for testing
+## Component configuration (correcting snake_case/kebab-case)
 components:
   frontend:
     enabled: true
@@ -45,25 +31,23 @@ components:
       type: NodePort
       port: 8080
       nodePort: 30800
-
-  ## Limit all other services
-  adService:
+  adservice:
     enabled: true
-  cartService:
+  cartservice:
     enabled: true
-  checkoutService:
+  checkoutservice:
     enabled: true
-  currencyService:
+  currencyservice:
     enabled: true
-  emailService:
+  emailservice:
     enabled: true
-  paymentService:
+  paymentservice:
     enabled: true
-  productCatalogService:
+  productcatalogservice:
     enabled: true
-  recommendationService:
+  recommendation:
     enabled: true
-  shippingService:
+  shippingservice:
     enabled: true
-  loadgenerator:
+  load-generator:
     enabled: true

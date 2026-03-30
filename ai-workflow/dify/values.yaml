@@ -1,13 +1,10 @@
 # =============================================================================
 # Dify - Helm Values (Demo)
 # =============================================================================
-# RAG & LLM Ops | Internal LLM Only | Single replica
-# =============================================================================
 
 api:
   replicas: 1
   image:
-    repository: langgenius/dify-api
     tag: "0.8.0"
   env:
     - name: DB_USERNAME
@@ -36,44 +33,28 @@ api:
       value: "weaviate.ai-workflow.svc"
     - name: WEAVIATE_PORT
       value: "8080"
-    # Internal LLM only - no public GPT
-    - name: OPENAI_API_BASE
-      value: "http://vllm.ai-workflow.svc:8000/v1"
-    - name: OPENAI_API_KEY
-      value: "not-needed-for-local"
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
+
+# Satisfy subchart secret templates even if enabled: false
+postgresql:
+  enabled: false
+  postgresql: # Bitnami subchart nesting
+    auth:
+      password: "admin-db-123"
+      postgresPassword: "admin-db-123"
+
+redis:
+  enabled: false
+  auth:
+    password: "redis-demo-123"
 
 worker:
   replicas: 1
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 250m
-      memory: 256Mi
-
 web:
   replicas: 1
-  image:
-    repository: langgenius/dify-web
-    tag: "0.8.0"
 
-ingress:
-  enabled: false
-
-## NodePort access for demo
 service:
   type: NodePort
   api:
-    port: 5001
     nodePort: 30500
   web:
-    port: 3000
     nodePort: 30501

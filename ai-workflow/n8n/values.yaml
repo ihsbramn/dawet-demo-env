@@ -1,60 +1,30 @@
 # =============================================================================
-# n8n - Helm Values (Demo)
-# =============================================================================
-# Workflow Automation | PostgreSQL Backend | Single replica
+# n8n - Helm (8gears) Values (Demo)
 # =============================================================================
 
-replicaCount: 1
+main:
+  replicas: 1
+  config:
+    DB_TYPE: postgresdb
+    DB_POSTGRESDB_HOST: postgres-grafana-postgresql.postgres-system.svc
+    DB_POSTGRESDB_PORT: "5432"
+    DB_POSTGRESDB_USER: admin
+    DB_POSTGRESDB_DATABASE: n8n_db
+    WEBHOOK_URL: "https://n8n.dev.dawet.internal"
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
+  secret:
+    DB_POSTGRESDB_PASSWORD: admin-db-123
+  
+  persistence:
+    enabled: true
+    storageClass: hostpath
+    size: 2Gi
 
-image:
-  repository: n8nio/n8n
-  tag: "1.50.0"
-
-config:
-  database:
-    type: postgresdb
-    postgresdb:
-      host: postgres-grafana-postgresql.postgres-system.svc
-      port: 5432
-      user: admin
-      password: admin-db-123
-      database: n8n_db
-  executions:
-    mode: regular
-    pruneData: true
-    pruneDataMaxAge: 168  # 7 days for demo
-  generic:
-    timezone: Asia/Jakarta
-
-extraEnv:
-  - name: WEBHOOK_URL
-    value: "https://n8n.dev.dawet.internal"
-  - name: N8N_OTEL_ENABLED
-    value: "true"
-  - name: OTEL_EXPORTER_OTLP_ENDPOINT
-    value: "http://alloy.observability.svc:4317"
-
-persistence:
-  enabled: true
-  storageClass: hostpath
-  size: 2Gi
-
-ingress:
-  enabled: false
-
-## NodePort access for demo
 service:
   type: NodePort
   port: 5678
   nodePort: 30520
 
-resources:
-  requests:
-    cpu: 50m
-    memory: 128Mi
-  limits:
-    cpu: 250m
-    memory: 256Mi
-
-serviceAccount:
-  create: true
+# Use labels that match the fleet bundle if needed
+labels:
+  bundle: n8n
