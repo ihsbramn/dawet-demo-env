@@ -52,6 +52,6 @@ resources:
 
 metrics:
   serviceMonitor:
-    enabled: true
+    enabled: false
     additionalLabels:
       release: grafana

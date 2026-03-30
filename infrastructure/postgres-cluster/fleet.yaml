@@ -17,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: local-path-provisioner
+        bundle: namespaces
 
 targetCustomizations:
   - name: dev

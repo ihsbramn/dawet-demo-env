@@ -26,6 +26,6 @@ master:
 metrics:
   enabled: true
   serviceMonitor:
-    enabled: true
+    enabled: false
     labels:
       release: grafana

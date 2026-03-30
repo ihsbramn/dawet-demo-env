@@ -3,8 +3,16 @@
 # =============================================================================
 defaultNamespace: ""
 
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: namespaces
+
 targetCustomizations:
   - name: dev
     clusterSelector:
       matchLabels:
         env: dev
+
+labels:
+  bundle: network-policies

@@ -51,6 +51,6 @@ gateway:
 
 monitoring:
   serviceMonitor:
-    enabled: true
+    enabled: false
     labels:
       release: grafana

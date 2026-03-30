@@ -11,7 +11,7 @@ global:
 
 primary:
   persistence:
-    enabled: true
+    enabled: false
     storageClass: local-path
     size: 5Gi
   resources:
@@ -28,8 +28,8 @@ primary:
         GRANT ALL PRIVILEGES ON DATABASE n8n_db TO n8n;
 
 metrics:
-  enabled: true
+  enabled: false
   serviceMonitor:
-    enabled: true
+    enabled: false
     labels:
       release: grafana

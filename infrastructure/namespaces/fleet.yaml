@@ -1,10 +1,13 @@
 # =============================================================================
-# Pod Security Standards - Fleet Bundle (Demo)
+# Namespaces - Fleet Bundle (Demo)
 # =============================================================================
-defaultNamespace: ""
+defaultNamespace: cattle-fleet-system
 
 targetCustomizations:
   - name: dev
     clusterSelector:
       matchLabels:
         env: dev
+
+labels:
+  bundle: namespaces

@@ -86,6 +86,6 @@ gateway:
 
 metaMonitoring:
   serviceMonitor:
-    enabled: true
+    enabled: false
     labels:
       release: grafana

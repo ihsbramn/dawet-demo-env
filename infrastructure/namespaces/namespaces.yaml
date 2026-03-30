@@ -1,11 +1,7 @@
 # =============================================================================
-# Pod Security Standards - Namespace Labels
-# =============================================================================
-# Enforce Kubernetes Pod Security Standards (PSS) via namespace labels
-# OJK Compliance: Restricted profile for production workloads
+# Namespace Definitions (Demo)
 # =============================================================================
 
-## Observability - Baseline (Alloy needs hostPath for logs)
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -15,7 +11,6 @@ metadata:
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted
 ---
-## AI Workflow - Restricted (strictest security)
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -25,7 +20,6 @@ metadata:
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted
 ---
-## MinIO - Baseline
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -35,7 +29,6 @@ metadata:
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted
 ---
-## PostgreSQL - Baseline
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -45,7 +38,6 @@ metadata:
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted
 ---
-## Redis - Baseline
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -55,17 +47,6 @@ metadata:
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted
 ---
-## Local Path Storage - Privileged (needs host access)
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: local-path-storage
-  labels:
-    pod-security.kubernetes.io/enforce: privileged
-    pod-security.kubernetes.io/audit: baseline
-    pod-security.kubernetes.io/warn: baseline
----
-## Sample Apps - Restricted
 apiVersion: v1
 kind: Namespace
 metadata:
