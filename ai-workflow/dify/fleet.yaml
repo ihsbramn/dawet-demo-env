@@ -10,7 +10,7 @@ defaultNamespace: ai-workflow
 helm:
   repo: https://borispolonsky.github.io/dify-helm/
   chart: dify
-  version: 0.16.8
+  version: 0.36.0
   releaseName: dify
   valuesFiles:
     - values.yaml
