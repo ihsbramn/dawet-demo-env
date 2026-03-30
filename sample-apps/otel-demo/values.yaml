@@ -52,16 +52,16 @@ components:
   load-generator:
     enabled: true
   fraud-detection:
-    enabled: false
+    enabled: true
   quote:
-    enabled: false
+    enabled: true
   image-provider:
-    enabled: false
+    enabled: true
   llm:
-    enabled: false
+    enabled: true
   postgresql:
-    enabled: false
+    enabled: true
   kafka:
-    enabled: false
+    enabled: true
   valkey-cart:
-    enabled: false
+    enabled: true
