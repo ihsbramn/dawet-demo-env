@@ -1,0 +1,16 @@
+# =============================================================================
+# MinIO - Dev Overlay (Demo)
+# =============================================================================
+mode: standalone
+replicas: 1
+
+persistence:
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi

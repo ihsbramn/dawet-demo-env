@@ -1,0 +1,10 @@
+# =============================================================================
+# Pod Security Standards - Fleet Bundle (Demo)
+# =============================================================================
+defaultNamespace: ""
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev

@@ -1,0 +1,31 @@
+# =============================================================================
+# Redis - Helm Values (Demo)
+# =============================================================================
+# Standalone mode for demo
+# =============================================================================
+
+architecture: standalone
+
+auth:
+  enabled: true
+  password: redis-demo-123
+
+master:
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: grafana

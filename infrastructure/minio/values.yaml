@@ -1,0 +1,57 @@
+# =============================================================================
+# MinIO - Base Helm Values (Demo)
+# =============================================================================
+# Standalone mode for demo environment
+# Buckets: loki-data, mimir-data, tempo-data, dify-files
+# =============================================================================
+
+mode: standalone
+
+rootUser: minio-admin
+rootPassword: minio-secret-123
+
+replicas: 1
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 10Gi
+
+## Pre-create buckets
+buckets:
+  - name: loki-data
+    policy: none
+    purge: false
+  - name: mimir-data
+    policy: none
+    purge: false
+  - name: tempo-data
+    policy: none
+    purge: false
+  - name: dify-files
+    policy: none
+    purge: false
+
+service:
+  type: NodePort
+  port: 9000
+  nodePort: 30900
+  consolePort: 9001
+  consoleNodePort: 30901
+
+ingress:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+metrics:
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: grafana

@@ -1,0 +1,33 @@
+# =============================================================================
+# Alloy (OTel Collector) - Fleet Bundle (Demo)
+# =============================================================================
+
+defaultNamespace: observability
+
+helm:
+  repo: https://grafana.github.io/helm-charts
+  chart: alloy
+  version: 0.7.0
+  releaseName: alloy
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: mimir
+  - selector:
+      matchLabels:
+        bundle: loki
+  - selector:
+      matchLabels:
+        bundle: tempo
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+labels:
+  bundle: alloy

@@ -1,0 +1,86 @@
+# =============================================================================
+# Tempo - Helm Values (Demo)
+# =============================================================================
+# Trace Storage | MinIO Backend | Single replicas
+# =============================================================================
+
+tempo:
+  storage:
+    trace:
+      backend: s3
+      s3:
+        endpoint: minio.minio-system.svc:9000
+        bucket: tempo-data
+        access_key: minio-admin
+        secret_key: minio-secret-123
+        insecure: true
+      wal:
+        path: /data/tempo/wal
+      block:
+        version: vParquet4
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:14250"
+        thrift_http:
+          endpoint: "0.0.0.0:14268"
+
+  retention: 168h  # 7 days for demo
+
+distributor:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingester:
+  replicas: 1
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+querier:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+queryFrontend:
+  replicas: 1
+
+compactor:
+  replicas: 1
+
+gateway:
+  enabled: true
+  replicas: 1
+
+metaMonitoring:
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: grafana

@@ -1,0 +1,94 @@
+# =============================================================================
+# Resource Quotas - Per Namespace
+# =============================================================================
+# Enforce resource limits to prevent noisy neighbor issues
+# =============================================================================
+
+## Observability Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: observability-quota
+  namespace: observability
+spec:
+  hard:
+    requests.cpu: "8"
+    requests.memory: 16Gi
+    limits.cpu: "16"
+    limits.memory: 32Gi
+    persistentvolumeclaims: "20"
+    pods: "50"
+---
+## AI Workflow Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: ai-workflow-quota
+  namespace: ai-workflow
+spec:
+  hard:
+    requests.cpu: "12"
+    requests.memory: 24Gi
+    limits.cpu: "24"
+    limits.memory: 48Gi
+    persistentvolumeclaims: "15"
+    pods: "40"
+---
+## MinIO Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: minio-quota
+  namespace: minio-system
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "10"
+    pods: "10"
+---
+## PostgreSQL Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: postgres-quota
+  namespace: postgres-system
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "10"
+    pods: "10"
+---
+## Redis Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: redis-quota
+  namespace: redis-system
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+    persistentvolumeclaims: "5"
+    pods: "10"
+---
+## Sample Apps Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: sample-apps-quota
+  namespace: sample-apps
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "30"

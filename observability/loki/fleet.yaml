@@ -1,0 +1,27 @@
+# =============================================================================
+# Loki (Logs) - Fleet Bundle (Demo)
+# =============================================================================
+
+defaultNamespace: observability
+
+helm:
+  repo: https://grafana.github.io/helm-charts
+  chart: loki
+  version: 6.7.0
+  releaseName: loki
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: minio
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+labels:
+  bundle: loki
