@@ -6,7 +6,7 @@
 ## 📁 Repository Structure
 
 ```
-dawet-fleet-repo/
+dawet-demo-env/
 ├── fleet.yaml                      # Root aggregation config
 ├── clusters/
 │   └── dev/cluster.yaml            # Dev cluster definition
@@ -60,10 +60,10 @@ Register in Rancher Fleet:
 apiVersion: fleet.cattle.io/v1alpha1
 kind: GitRepo
 metadata:
-  name: dawet-fleet-repo
+  name: dawet-demo-env
   namespace: fleet-default
 spec:
-  repo: https://git.dawet.internal/platform/dawet-fleet-repo.git
+  repo: https://github.com/ihsbramn/dawet-demo-env.git
   branch: main
   paths:
     - infrastructure/
