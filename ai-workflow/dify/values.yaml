@@ -19,9 +19,11 @@ api:
   
   persistence:
     enabled: true
-    storageClass: hostpath
-    accessModes: ReadWriteMany
-    size: 2Gi
+    mountPath: "/app/api/storage"
+    persistentVolumeClaim:
+      storageClass: hostpath
+      accessModes: [ReadWriteMany]
+      size: 5Gi
   
   service:
     port: 5001
@@ -40,28 +42,32 @@ sandbox:
   enabled: true
   replicas: 1
 
+## Enable Plugin Daemon with HostPath persistence
+pluginDaemon:
+  enabled: true
+  persistence:
+    enabled: true
+    mountPath: "/app/storage"
+    persistentVolumeClaim:
+      storageClass: hostpath
+      accessModes: [ReadWriteMany]
+      size: 5Gi
+
 ## =============================================================================
 ## Internal Infrastructure Bundles (Self-contained)
 ## =============================================================================
 
-# Using Chart Defaults for Database/Redis Connection
-externalPostgres:
-  enabled: false
-externalRedis:
-  enabled: false
-externalWeaviate:
-  enabled: false
-
-## Enable internal subcharts with hostpath storage
 postgresql:
   enabled: true
-  fullnameOverride: "dify-db-v2"
+  fullnameOverride: "dify-db-v3" # Bump version to avoid PVC claim errors
   architecture: standalone
   primary:
     persistence:
       enabled: true
       storageClass: hostpath
-      size: 2Gi
+      size: 8Gi
+  global:
+    storageClass: hostpath
   auth:
     database: "dify_db"
     username: "admin"
@@ -71,16 +77,18 @@ postgresql:
 
 redis:
   enabled: true
-  fullnameOverride: "dify-redis"
+  fullnameOverride: "dify-redis-v3"
   master:
     persistence:
       enabled: true
       storageClass: hostpath
-      size: 2Gi
+      size: 8Gi
+  global:
+    storageClass: hostpath
 
 weaviate:
   enabled: true
-  fullnameOverride: "dify-weaviate"
+  fullnameOverride: "dify-weaviate-v3"
   storage:
     storageClassName: hostpath
     size: 2Gi
