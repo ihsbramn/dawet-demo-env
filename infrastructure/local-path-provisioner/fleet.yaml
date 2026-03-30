@@ -1,33 +1,22 @@
 # =============================================================================
 # Local Path Provisioner - Fleet Bundle (Demo)
 # =============================================================================
-# Step 0: Storage Provisioner for local hostpath (Required for PVCs)
+# Step 2: Storage Provisioner for local local-path (Required for PVCs)
 # =============================================================================
 
-defaultNamespace: local-path-storage
+# This bundle uses the official raw manifest (local-path-storage.yaml)
+# It's lighter and more reliable than a Helm chart for 8GB RAM Mac.
 
-helm:
-  repo: https://charts.rancher.io/
-  chart: local-path-provisioner
-  version: 0.0.30
-  releaseName: local-path-storage
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: namespaces
 
 targetCustomizations:
   - name: dev
     clusterSelector:
       matchLabels:
         env: dev
-    helm:
-      values:
-        storageClass:
-          name: local-path
-          defaultClass: true
-          reclaimPolicy: Delete
-
-dependsOn:
-  - selector:
-      matchLabels:
-        bundle: namespaces
 
 labels:
   bundle: local-path-provisioner

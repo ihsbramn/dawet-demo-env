@@ -22,7 +22,7 @@ etcd:
   replicaCount: 1
   persistence:
     enabled: true
-    storageClass: hostpath
+    storageClass: local-path
     size: 2Gi
 
 minio:
@@ -65,5 +65,5 @@ service:
 
 persistence:
   enabled: true
-  storageClass: hostpath
+  storageClass: local-path
   size: 10Gi

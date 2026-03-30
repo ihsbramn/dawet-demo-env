@@ -100,7 +100,7 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 
 | Component | Chart | Namespace | Mode |
 |-----------|-------|-----------|------|
-| Storage Class | built-in | kube-system | Default (hostpath) |
+| Storage Class | built-in | kube-system | Default (local-path) |
 | MinIO | `minio/minio` | `minio-system` | Standalone |
 | PostgreSQL (x3) | `bitnami/postgresql` | `postgres-system` | Single instances |
 | Redis | `bitnami/redis` | `redis-system` | Standalone |

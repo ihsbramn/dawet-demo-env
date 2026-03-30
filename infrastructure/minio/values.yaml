@@ -14,7 +14,7 @@ replicas: 1
 
 persistence:
   enabled: true
-  storageClass: hostpath
+  storageClass: local-path
   size: 10Gi
 
 ## Pre-create buckets
