@@ -8,15 +8,15 @@
 # It's lighter and more reliable than a Helm chart for 8GB RAM Mac.
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: namespaces
+ - selector:
+     matchLabels:
+       bundle: namespaces
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: local-path-provisioner
+ bundle: local-path-provisioner

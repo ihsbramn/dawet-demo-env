@@ -7,23 +7,23 @@
 defaultNamespace: ai-workflow
 
 helm:
-  repo: https://community-charts.github.io/helm-charts/
-  chart: n8n
-  version: 1.16.34
-  releaseName: n8n
-  valuesFiles:
-    - values.yaml
+ repo: https://community-charts.github.io/helm-charts/
+ chart: n8n
+ version: 1.16.34
+ releaseName: n8n
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: milvus
+ - selector:
+     matchLabels:
+       bundle: milvus
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: n8n
+ bundle: n8n

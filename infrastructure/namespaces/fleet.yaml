@@ -5,10 +5,10 @@
 #  =============================================================================
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: namespaces
+ bundle: namespaces

@@ -7,23 +7,23 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts/
-  chart: alloy
-  version: 1.6.2
-  releaseName: alloy
-  valuesFiles:
-    - values.yaml
+ repo: https://grafana.github.io/helm-charts/
+ chart: alloy
+ version: 1.6.2
+ releaseName: alloy
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: tempo
+ - selector:
+     matchLabels:
+       bundle: tempo
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: alloy
+ bundle: alloy

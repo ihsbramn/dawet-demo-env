@@ -6,15 +6,15 @@
 defaultNamespace: ""
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: network-policies
+ - selector:
+     matchLabels:
+       bundle: network-policies
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: resource-quotas
+ bundle: resource-quotas

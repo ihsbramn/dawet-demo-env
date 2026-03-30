@@ -6,15 +6,15 @@
 defaultNamespace: ""
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: grafana
+ - selector:
+     matchLabels:
+       bundle: grafana
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: network-policies
+ bundle: network-policies

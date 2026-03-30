@@ -7,27 +7,27 @@
 defaultNamespace: minio-system
 
 helm:
-  repo: https://charts.min.io/
-  chart: minio
-  version: 5.4.0
-  releaseName: minio
-  valuesFiles:
-    - values.yaml
+ repo: https://charts.min.io/
+ chart: minio
+ version: 5.4.0
+ releaseName: minio
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: local-path-provisioner
+ - selector:
+     matchLabels:
+       bundle: local-path-provisioner
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
-    helm:
-      valuesFiles:
-        - values.yaml
-        - overlays/dev-values.yaml
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
+   helm:
+     valuesFiles:
+       - values.yaml
+       - overlays/dev-values.yaml
 
 labels:
-  bundle: minio
+ bundle: minio

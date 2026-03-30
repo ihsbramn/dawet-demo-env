@@ -7,23 +7,23 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts/
-  chart: grafana
-  version: 10.5.15
-  releaseName: grafana
-  valuesFiles:
-    - values.yaml
+ repo: https://grafana.github.io/helm-charts/
+ chart: grafana
+ version: 10.5.15
+ releaseName: grafana
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: alloy
+ - selector:
+     matchLabels:
+       bundle: alloy
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: grafana
+ bundle: grafana

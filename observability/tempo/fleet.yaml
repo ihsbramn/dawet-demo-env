@@ -7,23 +7,23 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts/
-  chart: tempo
-  version: 1.10.1
-  releaseName: tempo
-  valuesFiles:
-    - values.yaml
+ repo: https://grafana.github.io/helm-charts/
+ chart: tempo
+ version: 1.10.1
+ releaseName: tempo
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: loki
+ - selector:
+     matchLabels:
+       bundle: loki
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: tempo
+ bundle: tempo

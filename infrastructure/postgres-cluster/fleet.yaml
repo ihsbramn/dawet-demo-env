@@ -7,23 +7,23 @@
 defaultNamespace: postgres-system
 
 helm:
-  repo: https://charts.bitnami.com/bitnami/
-  chart: postgresql
-  version: 18.5.14
-  releaseName: postgres-grafana
-  valuesFiles:
-    - values-grafana.yaml
+ repo: https://charts.bitnami.com/bitnami/
+ chart: postgresql
+ version: 18.5.14
+ releaseName: postgres-grafana
+ valuesFiles:
+   - values-grafana.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: minio
+ - selector:
+     matchLabels:
+       bundle: minio
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: postgres-cluster
+ bundle: postgres-cluster

@@ -7,23 +7,23 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts/
-  chart: loki
-  version: 6.55.0
-  releaseName: loki
-  valuesFiles:
-    - values.yaml
+ repo: https://grafana.github.io/helm-charts/
+ chart: loki
+ version: 6.55.0
+ releaseName: loki
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: mimir
+ - selector:
+     matchLabels:
+       bundle: mimir
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: loki
+ bundle: loki

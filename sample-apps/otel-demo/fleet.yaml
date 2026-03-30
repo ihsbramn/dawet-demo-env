@@ -7,23 +7,23 @@
 defaultNamespace: sample-apps
 
 helm:
-  repo: https://open-telemetry.github.io/opentelemetry-helm-charts/
-  chart: opentelemetry-demo
-  version: 0.40.6
-  releaseName: otel-demo
-  valuesFiles:
-    - values.yaml
+ repo: https://open-telemetry.github.io/opentelemetry-helm-charts/
+ chart: opentelemetry-demo
+ version: 0.40.6
+ releaseName: otel-demo
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: resource-quotas
+ - selector:
+     matchLabels:
+       bundle: resource-quotas
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: otel-demo
+ bundle: otel-demo

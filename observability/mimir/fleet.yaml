@@ -7,23 +7,23 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://prometheus-community.github.io/helm-charts/
-  chart: prometheus
-  version: 25.21.0
-  releaseName: mimir
-  valuesFiles:
-    - values.yaml
+ repo: https://prometheus-community.github.io/helm-charts/
+ chart: prometheus
+ version: 25.21.0
+ releaseName: mimir
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: dify
+ - selector:
+     matchLabels:
+       bundle: dify
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: mimir
+ bundle: mimir

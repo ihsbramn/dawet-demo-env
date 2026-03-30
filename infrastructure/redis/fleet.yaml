@@ -7,23 +7,23 @@
 defaultNamespace: redis-system
 
 helm:
-  repo: https://charts.bitnami.com/bitnami/
-  chart: redis
-  version: 25.3.9
-  releaseName: redis
-  valuesFiles:
-    - values.yaml
+ repo: https://charts.bitnami.com/bitnami/
+ chart: redis
+ version: 25.3.9
+ releaseName: redis
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: postgres-cluster
+ - selector:
+     matchLabels:
+       bundle: postgres-cluster
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: redis
+ bundle: redis

@@ -7,23 +7,23 @@
 defaultNamespace: ai-workflow
 
 helm:
-  repo: https://langgenius.github.io/dify-helm/
-  chart: dify
-  version: 3.8.0
-  releaseName: dify
-  valuesFiles:
-    - values.yaml
+ repo: https://langgenius.github.io/dify-helm/
+ chart: dify
+ version: 3.8.0
+ releaseName: dify
+ valuesFiles:
+   - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: n8n
+ - selector:
+     matchLabels:
+       bundle: n8n
 
 targetCustomizations:
-  - name: dev
-    clusterSelector:
-      matchLabels:
-        env: dev
+ - name: dev
+   clusterSelector:
+     matchLabels:
+       env: dev
 
 labels:
-  bundle: dify
+ bundle: dify
