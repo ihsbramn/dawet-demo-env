@@ -1,0 +1,33 @@
+# =============================================================================
+# Local Path Provisioner - Fleet Bundle (Demo)
+# =============================================================================
+# Step 0: Storage Provisioner for local hostpath (Required for PVCs)
+# =============================================================================
+
+defaultNamespace: local-path-storage
+
+helm:
+  repo: https://charts.rancher.io/
+  chart: local-path-provisioner
+  version: 0.0.30
+  releaseName: local-path-storage
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+    helm:
+      values:
+        storageClass:
+          name: local-path
+          defaultClass: true
+          reclaimPolicy: Delete
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: namespaces
+
+labels:
+  bundle: local-path-provisioner
