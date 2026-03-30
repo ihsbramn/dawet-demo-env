@@ -14,11 +14,7 @@ helm:
  valuesFiles:
    - values.yaml
 
-dependsOn:
- - selector:
-     matchLabels:
-       bundle: n8n
-
+ 
 targetCustomizations:
  - name: dev
    clusterSelector:

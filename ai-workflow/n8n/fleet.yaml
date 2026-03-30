@@ -14,11 +14,7 @@ helm:
  valuesFiles:
    - values.yaml
 
-dependsOn:
- - selector:
-     matchLabels:
-       bundle: weaviate
-
+ 
 targetCustomizations:
  - name: dev
    clusterSelector:

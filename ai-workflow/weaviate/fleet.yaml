@@ -14,11 +14,7 @@ helm:
   valuesFiles:
     - values.yaml
 
-dependsOn:
-  - selector:
-      matchLabels:
-        bundle: redis
-
+ 
 targetCustomizations:
   - name: dev
     clusterSelector:

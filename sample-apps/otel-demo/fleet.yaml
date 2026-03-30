@@ -14,11 +14,7 @@ helm:
  valuesFiles:
    - values.yaml
 
-dependsOn:
- - selector:
-     matchLabels:
-       bundle: resource-quotas
-
+ 
 targetCustomizations:
  - name: dev
    clusterSelector:
