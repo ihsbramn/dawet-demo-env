@@ -12,6 +12,12 @@ persistence:
   storageClassName: hostpath
   size: 2Gi
 
+initChownData:
+  enabled: true
+  image:
+    repository: busybox
+    tag: 1.36.1
+
 ## Database - PostgreSQL
 grafana.ini:
   server:
