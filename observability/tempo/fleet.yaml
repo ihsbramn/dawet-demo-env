@@ -1,7 +1,7 @@
 # =============================================================================
 # Tempo (Traces) - Fleet Bundle (Demo)
 # =============================================================================
-# Step 7: Distributed tracing with MinIO backend
+# Step 10: Distributed tracing
 # =============================================================================
 
 defaultNamespace: observability

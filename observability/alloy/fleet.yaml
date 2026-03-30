@@ -1,7 +1,7 @@
 # =============================================================================
 # Alloy (OTel Collector) - Fleet Bundle (Demo)
 # =============================================================================
-# Step 8: OpenTelemetry collector DaemonSet
+# Step 11: OpenTelemetry collector DaemonSet
 # =============================================================================
 
 defaultNamespace: observability

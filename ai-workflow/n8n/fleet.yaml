@@ -1,7 +1,7 @@
 # =============================================================================
 # n8n Workflow Automation - Fleet Bundle (Demo)
 # =============================================================================
-# Step 11: Workflow automation engine
+# Step 6: Workflow automation (after milvus)
 # =============================================================================
 
 defaultNamespace: ai-workflow

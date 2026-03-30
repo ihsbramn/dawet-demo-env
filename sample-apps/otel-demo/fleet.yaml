@@ -1,7 +1,7 @@
 # =============================================================================
 # OpenTelemetry Demo - Fleet Bundle (Demo)
 # =============================================================================
-# Step 15: Sample app that generates traces/metrics/logs
+# Step 15: Sample app
 # =============================================================================
 
 defaultNamespace: sample-apps
