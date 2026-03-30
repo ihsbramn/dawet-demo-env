@@ -55,7 +55,7 @@ externalWeaviate:
 ## Enable internal subcharts with hostpath storage
 postgresql:
   enabled: true
-  fullnameOverride: "dify-postgres"
+  fullnameOverride: "dify-db-v2"
   architecture: standalone
   primary:
     persistence:
