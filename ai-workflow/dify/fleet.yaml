@@ -1,25 +1,25 @@
 #  =============================================================================
 # Dify - Fleet Bundle (Demo)
 #  =============================================================================
-# Step 7: RAG & LLM Ops platform (after n8n)
+# Step 7: RAG & LLM Ops platform
+# Using BorisPolonsky/dify-helm (OpenSource version)
 #  =============================================================================
 
 defaultNamespace: ai-workflow
 
 helm:
- repo: https://langgenius.github.io/dify-helm/
- chart: dify
- version: 3.8.0
- releaseName: dify
- valuesFiles:
-   - values.yaml
+  repo: https://borispolonsky.github.io/dify-helm/
+  chart: dify
+  version: 0.16.8
+  releaseName: dify
+  valuesFiles:
+    - values.yaml
 
- 
 targetCustomizations:
- - name: dev
-   clusterSelector:
-     matchLabels:
-       env: dev
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
 
 labels:
- bundle: dify
+  bundle: dify

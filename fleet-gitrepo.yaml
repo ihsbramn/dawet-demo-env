@@ -9,5 +9,6 @@ spec:
   paths:
     - infrastructure
     - observability
-    - ai-workflow
+    - ai-workflow/dify
+    - ai-workflow/n8n
     - sample-apps

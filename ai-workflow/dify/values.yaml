@@ -1,62 +1,92 @@
 # =============================================================================
-# Dify - Helm Values (Demo)
+# Dify - BorisPolonsky/dify-helm Values (Demo)
 # =============================================================================
 
-api:
-  replicas: 1
-  image:
-    tag: "0.8.0"
-  env:
-    - name: DB_USERNAME
-      value: "admin"
-    - name: DB_PASSWORD
-      value: "admin-db-123"
-    - name: DB_HOST
-      value: "postgres-grafana-postgresql.postgres-system.svc"
-    - name: DB_PORT
-      value: "5432"
-    - name: DB_DATABASE
-      value: "dify_db"
-    - name: REDIS_HOST
-      value: "redis-master.redis-system.svc"
-    - name: REDIS_PORT
-      value: "6379"
-    - name: REDIS_PASSWORD
-      value: "redis-demo-123"
-    - name: STORAGE_TYPE
-      value: "local"
-    - name: STORAGE_LOCAL_PATH
-      value: "/app/api/storage"
-    - name: VECTOR_STORE
-      value: "weaviate"
-    - name: WEAVIATE_HOST
-      value: "weaviate.ai-workflow.svc"
-    - name: WEAVIATE_PORT
-      value: "8080"
+global:
+  edition: "SELF_HOSTED"
+  appSecretKey: "dify-demo-app-secret-1234567890-xyz"
 
-# Satisfy subchart secret templates even if enabled: false
-# Dify chart uses 'postgresql.auth.password' or 'postgresql.postgresql.auth.password'
+api:
+  enabled: true
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  
+  persistence:
+    enabled: true
+    storageClass: hostpath
+    accessModes: ReadWriteMany
+    size: 2Gi
+  
+  service:
+    port: 5001
+
+web:
+  enabled: true
+  replicas: 1
+  service:
+    port: 3000
+
+worker:
+  enabled: true
+  replicas: 1
+
+sandbox:
+  enabled: true
+  replicas: 1
+
+## =============================================================================
+## Internal Infrastructure Bundles (Self-contained)
+## =============================================================================
+
+# Using Chart Defaults for Database/Redis Connection
+externalPostgres:
+  enabled: false
+externalRedis:
+  enabled: false
+externalWeaviate:
+  enabled: false
+
+## Enable internal subcharts with hostpath storage
 postgresql:
   enabled: true
-  auth:
-    database: "dify_db"
-    username: "admin"
-    password: "admin-db-123"
-    postgresPassword: "admin-db-123"
+  fullnameOverride: "dify-postgres"
+  primary:
+    persistence:
+      enabled: true
+      storageClass: hostpath
+      size: 2Gi
 
 redis:
   enabled: true
-  auth:
-    password: "redis-demo-123"
+  fullnameOverride: "dify-redis"
+  master:
+    persistence:
+      enabled: true
+      storageClass: hostpath
+      size: 2Gi
 
-worker:
-  replicas: 1
-web:
-  replicas: 1
+weaviate:
+  enabled: true
+  fullnameOverride: "dify-weaviate"
+  storage:
+    storageClassName: hostpath
+    size: 2Gi
 
-service:
-  type: NodePort
-  api:
-    nodePort: 30500
-  web:
-    nodePort: 30501
+ssrfProxy:
+  enabled: false
+
+## Enable NodePort for outside access
+proxy:
+  enabled: true
+  service:
+    type: NodePort
+    http:
+      nodePort: 30500
+    https:
+      nodePort: 30501
