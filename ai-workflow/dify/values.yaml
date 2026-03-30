@@ -56,11 +56,18 @@ externalWeaviate:
 postgresql:
   enabled: true
   fullnameOverride: "dify-postgres"
+  architecture: standalone
   primary:
     persistence:
       enabled: true
       storageClass: hostpath
       size: 2Gi
+  auth:
+    database: "dify_db"
+    username: "admin"
+    password: "admin-db-123"
+    postgresPassword: "admin-db-123"
+    replicationPassword: "admin-db-123"
 
 redis:
   enabled: true
