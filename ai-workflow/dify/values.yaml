@@ -11,7 +11,7 @@ api:
   replicas: 1
   image:
     repository: "langgenius/dify-api"
-    tag: "main"
+    tag: "1.12.1"
     pullPolicy: Always
   resources:
     requests:
@@ -37,7 +37,7 @@ web:
   replicas: 1
   image:
     repository: "langgenius/dify-web"
-    tag: "main"
+    tag: "1.12.1"
     pullPolicy: Always
   service:
     port: 3000
@@ -47,7 +47,7 @@ worker:
   replicas: 1
   image:
     repository: "langgenius/dify-api"
-    tag: "main"
+    tag: "1.12.1"
     pullPolicy: Always
 
 sandbox:
@@ -62,7 +62,7 @@ pluginDaemon:
   enabled: true
   image:
     repository: "langgenius/dify-plugin-daemon"
-    tag: "main-local"
+    tag: "0.5.3-local"
     pullPolicy: Always
   persistence:
     enabled: true
