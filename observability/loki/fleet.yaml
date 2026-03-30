@@ -9,7 +9,7 @@ defaultNamespace: observability
 helm:
   repo: https://grafana.github.io/helm-charts/
   chart: loki
-  version: 6.7.0
+  version: 6.55.0
   releaseName: loki
   valuesFiles:
     - values.yaml

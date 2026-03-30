@@ -1,17 +1,15 @@
 # =============================================================================
 # PostgreSQL - Grafana Database (Demo)
 # =============================================================================
-global:
-  postgresql:
-    auth:
-      postgresPassword: postgres-admin-123
-      username: grafana
-      password: grafana-db-123
-      database: grafana_db
+auth:
+  postgresPassword: postgres-admin-123
+  username: grafana
+  password: grafana-db-123
+  database: grafana_db
 
 primary:
   persistence:
-    enabled: false
+    enabled: true
     storageClass: hostpath
     size: 5Gi
   resources:
@@ -21,15 +19,6 @@ primary:
     limits:
       cpu: 500m
       memory: 512Mi
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE DATABASE grafana_db;
-        GRANT ALL PRIVILEGES ON DATABASE grafana_db TO grafana;
 
 metrics:
   enabled: false
-  serviceMonitor:
-    enabled: false
-    labels:
-      release: grafana

@@ -9,7 +9,7 @@ defaultNamespace: observability
 helm:
   repo: https://grafana.github.io/helm-charts/
   chart: alloy
-  version: 0.7.0
+  version: 1.6.2
   releaseName: alloy
   valuesFiles:
     - values.yaml

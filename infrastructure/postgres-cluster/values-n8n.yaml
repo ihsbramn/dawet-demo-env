@@ -1,17 +1,15 @@
 # =============================================================================
-# PostgreSQL - n8n Workflow Database (Demo)
+# PostgreSQL - n8n Database (Demo)
 # =============================================================================
-global:
-  postgresql:
-    auth:
-      postgresPassword: postgres-admin-123
-      username: n8n
-      password: n8n-db-123
-      database: n8n_db
+auth:
+  postgresPassword: postgres-admin-123
+  username: n8n
+  password: n8n-db-123
+  database: n8n_db
 
 primary:
   persistence:
-    enabled: false
+    enabled: true
     storageClass: hostpath
     size: 5Gi
   resources:
@@ -21,15 +19,6 @@ primary:
     limits:
       cpu: 500m
       memory: 512Mi
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE DATABASE n8n_db;
-        GRANT ALL PRIVILEGES ON DATABASE n8n_db TO n8n;
 
 metrics:
   enabled: false
-  serviceMonitor:
-    enabled: false
-    labels:
-      release: grafana

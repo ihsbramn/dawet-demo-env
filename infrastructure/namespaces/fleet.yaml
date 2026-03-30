@@ -1,7 +1,8 @@
 # =============================================================================
 # Namespaces - Fleet Bundle (Demo)
 # =============================================================================
-defaultNamespace: cattle-fleet-system
+# Step 1: Create all namespaces before any app deploys
+# =============================================================================
 
 targetCustomizations:
   - name: dev

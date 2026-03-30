@@ -1,19 +1,17 @@
 # =============================================================================
-# PostgreSQL - Milvus Metadata Database (Demo)
+# PostgreSQL - Milvus Metadata (Demo)
 # =============================================================================
-global:
-  postgresql:
-    auth:
-      postgresPassword: postgres-admin-123
-      username: milvus
-      password: milvus-db-123
-      database: milvus_meta
+auth:
+  postgresPassword: postgres-admin-123
+  username: milvus
+  password: milvus-db-123
+  database: milvus_meta
 
 primary:
   persistence:
-    enabled: false
+    enabled: true
     storageClass: hostpath
-    size: 10Gi
+    size: 5Gi
   resources:
     requests:
       cpu: 100m
@@ -21,15 +19,6 @@ primary:
     limits:
       cpu: 500m
       memory: 512Mi
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE DATABASE milvus_meta;
-        GRANT ALL PRIVILEGES ON DATABASE milvus_meta TO milvus;
 
 metrics:
   enabled: false
-  serviceMonitor:
-    enabled: false
-    labels:
-      release: grafana

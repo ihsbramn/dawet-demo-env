@@ -1,7 +1,7 @@
 # =============================================================================
 # PostgreSQL Cluster - Fleet Bundle (Demo)
 # =============================================================================
-# Step 3: 3 PostgreSQL instances: grafana_db, milvus_meta, n8n_db
+# Step 3: PostgreSQL instance for grafana_db
 # =============================================================================
 
 defaultNamespace: postgres-system
@@ -9,7 +9,7 @@ defaultNamespace: postgres-system
 helm:
   repo: https://charts.bitnami.com/bitnami/
   chart: postgresql
-  version: 15.5.0
+  version: 18.5.14
   releaseName: postgres-grafana
   valuesFiles:
     - values-grafana.yaml
