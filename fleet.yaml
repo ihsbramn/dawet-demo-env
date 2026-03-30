@@ -18,5 +18,5 @@ targetCustomizations:
       values:
         global:
           environment: dev
-          storageClass: local-path
+          storageClass: hostpath
           domain: dev.dawet.internal

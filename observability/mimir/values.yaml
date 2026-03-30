@@ -44,7 +44,7 @@ ingester:
   replicas: 1
   persistentVolume:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 5Gi
   resources:
     requests:
@@ -71,14 +71,14 @@ store_gateway:
   replicas: 1
   persistentVolume:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 5Gi
 
 compactor:
   replicas: 1
   persistentVolume:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 5Gi
 
 gateway:

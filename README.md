@@ -9,11 +9,11 @@
 dawet-demo-env/
 ├── fleet.yaml                      # Root aggregation config
 ├── infrastructure/
-│   ├── local-path-provisioner/     # StorageClass
-│   ├── minio/                      # Object Storage (S3-compatible)
+│   ├── namespaces/                 # NS & PSS labels
+│   ├── minio/                      # Object Storage
 │   │   └── overlays/dev-values.yaml
-│   ├── postgres-cluster/           # PostgreSQL (Grafana, Milvus, n8n)
-│   └── redis/                      # Cache & Message Queue
+│   ├── postgres-cluster/           # PostgreSQL
+│   └── redis/                      # Cache
 ├── observability/
 │   ├── grafana/                    # Dashboards & Alerting
 │   ├── mimir/                      # Metrics (Prometheus-compatible)
@@ -39,10 +39,9 @@ dawet-demo-env/
 ## 🏗️ Deployment Order
 
 ```
-1. local-path-provisioner
-    ├── 2. minio
-    ├── 3. postgres-cluster
-    └── 4. redis
+1. minio
+2. postgres-cluster
+3. redis
             │
             ├── 5. mimir / loki / tempo
             ├── 6. dify / milvus / n8n
@@ -92,7 +91,7 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 
 | Component | Chart | Namespace | Mode |
 |-----------|-------|-----------|------|
-| Local Path Provisioner | `containeroo/local-path-provisioner` | `local-path-storage` | Default StorageClass |
+| Storage Class | built-in | kube-system | Default (hostpath) |
 | MinIO | `minio/minio` | `minio-system` | Standalone |
 | PostgreSQL (x3) | `bitnami/postgresql` | `postgres-system` | Single instances |
 | Redis | `bitnami/redis` | `redis-system` | Standalone |

@@ -49,7 +49,7 @@ ingester:
   replicas: 1
   persistence:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 5Gi
   resources:
     requests:

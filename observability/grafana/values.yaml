@@ -9,7 +9,7 @@ adminPassword: admin-demo-123
 
 persistence:
   enabled: true
-  storageClassName: local-path
+  storageClassName: hostpath
   size: 2Gi
 
 ## Database - PostgreSQL
