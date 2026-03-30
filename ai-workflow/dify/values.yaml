@@ -37,7 +37,7 @@ api:
 # Satisfy subchart secret templates even if enabled: false
 # Dify chart uses 'postgresql.auth.password' or 'postgresql.postgresql.auth.password'
 postgresql:
-  enabled: false
+  enabled: true
   auth:
     database: "dify_db"
     username: "admin"
@@ -45,7 +45,7 @@ postgresql:
     postgresPassword: "admin-db-123"
 
 redis:
-  enabled: false
+  enabled: true
   auth:
     password: "redis-demo-123"
 
