@@ -1,0 +1,14 @@
+# .gitignore for dawet-fleet-repo
+*.swp
+*.swo
+*~
+.DS_Store
+.idea/
+.vscode/
+*.bak
+*.tmp
+
+# Never commit actual secrets
+*-secret.yaml
+*-sealed-secret.yaml
+!*-secret.yaml.example

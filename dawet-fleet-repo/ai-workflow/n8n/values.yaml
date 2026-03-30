@@ -1,0 +1,60 @@
+# =============================================================================
+# n8n - Helm Values (Demo)
+# =============================================================================
+# Workflow Automation | PostgreSQL Backend | Single replica
+# =============================================================================
+
+replicaCount: 1
+
+image:
+  repository: n8nio/n8n
+  tag: "1.50.0"
+
+config:
+  database:
+    type: postgresdb
+    postgresdb:
+      host: postgres-n8n-postgresql.postgres-system.svc
+      port: 5432
+      user: n8n
+      password: n8n-db-123
+      database: n8n_db
+  executions:
+    mode: regular
+    pruneData: true
+    pruneDataMaxAge: 168  # 7 days for demo
+  generic:
+    timezone: Asia/Jakarta
+
+extraEnv:
+  - name: WEBHOOK_URL
+    value: "https://n8n.dev.dawet.internal"
+  - name: N8N_OTEL_ENABLED
+    value: "true"
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: "http://alloy.observability.svc:4317"
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 5Gi
+
+ingress:
+  enabled: false
+
+## NodePort access for demo
+service:
+  type: NodePort
+  port: 5678
+  nodePort: 30520
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+serviceAccount:
+  create: true

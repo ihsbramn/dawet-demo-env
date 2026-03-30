@@ -1,0 +1,27 @@
+# =============================================================================
+# OpenTelemetry Demo - Fleet Bundle (Demo)
+# =============================================================================
+
+defaultNamespace: sample-apps
+
+helm:
+  repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+  chart: opentelemetry-demo
+  version: 0.32.0
+  releaseName: otel-demo
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: alloy
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+labels:
+  bundle: otel-demo

@@ -1,0 +1,10 @@
+# =============================================================================
+# Resource Quotas - Fleet Bundle (Demo)
+# =============================================================================
+defaultNamespace: ""
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev

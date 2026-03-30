@@ -1,0 +1,68 @@
+# =============================================================================
+# OpenTelemetry Demo - Helm Values
+# =============================================================================
+# Generates traces, metrics, and logs for validation
+# Routes telemetry to Alloy collector
+# =============================================================================
+
+default:
+  env:
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://alloy.observability.svc:4317"
+    - name: OTEL_EXPORTER_OTLP_PROTOCOL
+      value: "grpc"
+
+## Disable built-in collectors (using Alloy instead)
+opentelemetry-collector:
+  enabled: false
+
+## Disable built-in backends (using our LGTM stack)
+jaeger:
+  enabled: false
+prometheus:
+  enabled: false
+grafana:
+  enabled: false
+
+## Enable frontend for testing
+components:
+  frontend:
+    enabled: true
+    ingress:
+      enabled: false
+    service:
+      type: NodePort
+      port: 8080
+      nodePort: 30800
+
+  ## Scale down non-essential services for demo
+  adService:
+    enabled: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  cartService:
+    enabled: true
+  checkoutService:
+    enabled: true
+  currencyService:
+    enabled: true
+  emailService:
+    enabled: true
+  paymentService:
+    enabled: true
+  productCatalogService:
+    enabled: true
+  recommendationService:
+    enabled: true
+  shippingService:
+    enabled: true
+
+  ## Load generator for continuous telemetry
+  loadgenerator:
+    enabled: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi

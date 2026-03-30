@@ -1,0 +1,94 @@
+# =============================================================================
+# Grafana - Helm Values (Demo)
+# =============================================================================
+
+replicas: 1
+
+adminUser: admin
+adminPassword: admin-demo-123
+
+persistence:
+  enabled: true
+  storageClassName: local-path
+  size: 2Gi
+
+## Database - PostgreSQL
+grafana.ini:
+  server:
+    root_url: "https://grafana.dev.dawet.internal"
+  database:
+    type: postgres
+    host: postgres-grafana-postgresql.postgres-system.svc:5432
+    name: grafana_db
+    user: grafana
+    password: grafana-db-123
+  unified_alerting:
+    enabled: true
+
+## Pre-configured Datasources
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Mimir
+        type: prometheus
+        url: http://mimir-gateway.observability.svc:8080/prometheus
+        access: proxy
+        isDefault: true
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+        secureJsonData:
+          httpHeaderValue1: dawet
+      - name: Loki
+        type: loki
+        url: http://loki-gateway.observability.svc:3100
+        access: proxy
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+        secureJsonData:
+          httpHeaderValue1: dawet
+      - name: Tempo
+        type: tempo
+        url: http://tempo-gateway.observability.svc:3200
+        access: proxy
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+          tracesToLogs:
+            datasourceUid: loki
+            tags: ['service.name', 'service.namespace']
+          tracesToMetrics:
+            datasourceUid: mimir
+          serviceMap:
+            datasourceUid: mimir
+          nodeGraph:
+            enabled: true
+        secureJsonData:
+          httpHeaderValue1: dawet
+
+## Ingress disabled - using NodePort
+ingress:
+  enabled: false
+
+## NodePort access for demo
+service:
+  type: NodePort
+  port: 3000
+  nodePort: 30300
+
+## Resources
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+## Dashboard sidecar
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: ALL
+    label: grafana_dashboard
+  datasources:
+    enabled: true
