@@ -14,10 +14,10 @@ config:
   database:
     type: postgresdb
     postgresdb:
-      host: postgres-n8n-postgresql.postgres-system.svc
+      host: postgres-grafana-postgresql.postgres-system.svc
       port: 5432
-      user: n8n
-      password: n8n-db-123
+      user: admin
+      password: admin-db-123
       database: n8n_db
   executions:
     mode: regular
@@ -37,7 +37,7 @@ extraEnv:
 persistence:
   enabled: true
   storageClass: hostpath
-  size: 5Gi
+  size: 2Gi
 
 ingress:
   enabled: false
@@ -50,11 +50,11 @@ service:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 50m
+    memory: 128Mi
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 250m
+    memory: 256Mi
 
 serviceAccount:
   create: true

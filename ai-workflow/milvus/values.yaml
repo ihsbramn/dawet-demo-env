@@ -11,11 +11,11 @@ standalone:
   replicas: 1
   resources:
     requests:
-      cpu: 250m
-      memory: 512Mi
+      cpu: 100m
+      memory: 256Mi
     limits:
-      cpu: 1000m
-      memory: 2Gi
+      cpu: 500m
+      memory: 1Gi
 
 etcd:
   enabled: true
@@ -42,10 +42,10 @@ postgresql:
 
 externalPostgresql:
   enabled: true
-  host: postgres-milvus-postgresql.postgres-system.svc
+  host: postgres-grafana-postgresql.postgres-system.svc
   port: 5432
-  user: milvus
-  password: milvus-db-123
+  user: admin
+  password: admin-db-123
   database: milvus_meta
 
 log:

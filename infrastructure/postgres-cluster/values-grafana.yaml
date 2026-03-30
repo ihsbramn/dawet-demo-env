@@ -1,17 +1,19 @@
 # =============================================================================
-# PostgreSQL - Grafana Database (Demo)
+# PostgreSQL (Unified) - Helm Values (Demo)
+# =============================================================================
+# Ultra-lightweight: One instance for all DBs (8GB RAM optimization)
 # =============================================================================
 auth:
   postgresPassword: postgres-admin-123
-  username: grafana
-  password: grafana-db-123
+  username: admin
+  password: admin-db-123
   database: grafana_db
 
 primary:
   persistence:
     enabled: true
     storageClass: hostpath
-    size: 5Gi
+    size: 10Gi
   resources:
     requests:
       cpu: 100m
@@ -19,6 +21,12 @@ primary:
     limits:
       cpu: 500m
       memory: 512Mi
+  initdb:
+    scripts:
+      init.sql: |
+        CREATE DATABASE milvus_meta;
+        CREATE DATABASE n8n_db;
+        CREATE DATABASE dify_db;
 
 metrics:
   enabled: false

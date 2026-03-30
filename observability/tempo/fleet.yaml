@@ -1,15 +1,15 @@
 # =============================================================================
 # Tempo (Traces) - Fleet Bundle (Demo)
 # =============================================================================
-# Step 10: Distributed tracing
+# Step 10: Single-binary Tempo for ultra-lightweight tracing
 # =============================================================================
 
 defaultNamespace: observability
 
 helm:
   repo: https://grafana.github.io/helm-charts/
-  chart: tempo-distributed
-  version: 1.61.3
+  chart: tempo
+  version: 1.10.1
   releaseName: tempo
   valuesFiles:
     - values.yaml

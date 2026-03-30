@@ -1,98 +1,36 @@
 # =============================================================================
-# Mimir Distributed - Helm Values (Demo)
+# Prometheus (Mimir Substitute) - Helm Values (Demo)
 # =============================================================================
-# Metrics Storage | MinIO Backend | Minimal single-replica setup
+# Ultra-lightweight Prometheus for 8GB RAM Mac
 # =============================================================================
-
-mimir:
-  structuredConfig:
-    common:
-      storage:
-        backend: s3
-        s3:
-          endpoint: minio.minio-system.svc:9000
-          bucket_name: mimir-data
-          access_key_id: minio-admin
-          secret_access_key: minio-secret-123
-          insecure: true
-    limits:
-      max_global_series_per_user: 150000
-      compactor_blocks_retention_period: 168h
-
-# Disable zone-awareness (demo = single node)
-ingester:
-  zoneAwareReplication:
-    enabled: false
-  replicas: 1
-  persistentVolume:
-    storageClass: hostpath
-    size: 2Gi
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi
-
-store_gateway:
-  zoneAwareReplication:
-    enabled: false
-  replicas: 1
-  persistentVolume:
-    storageClass: hostpath
-    size: 2Gi
-
-distributor:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-
-querier:
-  replicas: 1
-
-query_frontend:
-  replicas: 1
-
-query_scheduler:
-  replicas: 1
-
-compactor:
-  replicas: 1
-  persistentVolume:
-    storageClass: hostpath
-    size: 2Gi
-
-ruler:
-  replicas: 1
 
 alertmanager:
-  replicas: 1
+  enabled: false
+
+server:
+  replicaCount: 1
+  retention: 7d
   persistentVolume:
+    size: 2Gi
     storageClass: hostpath
-    size: 1Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
-overrides_exporter:
-  replicas: 1
-
-gateway:
-  enabledNonEnterprise: true
-  replicas: 1
-
-# Disable built-in minio (we use our own)
-minio:
+# Minimal set of exporters for demo
+prometheus-pushgateway:
   enabled: false
 
-# Disable kafka (not needed for demo)
-kafka:
+prometheus-node-exporter:
   enabled: false
 
-# Disable rollout-operator 
-rollout_operator:
+kube-state-metrics:
   enabled: false
 
-metaMonitoring:
-  serviceMonitor:
-    enabled: false
+# Configure OTLP/Remote Write compatibility
+extraArgs:
+  enable-feature: otlp-write-receiver

@@ -20,8 +20,8 @@ grafana.ini:
     type: postgres
     host: postgres-grafana-postgresql.postgres-system.svc:5432
     name: grafana_db
-    user: grafana
-    password: grafana-db-123
+    user: admin
+    password: admin-db-123
   unified_alerting:
     enabled: true
 
@@ -30,59 +30,43 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
-      - name: Mimir
+      - name: Prometheus
         type: prometheus
-        url: http://mimir-gateway.observability.svc:8080/prometheus
+        url: http://mimir.observability.svc:9090
         access: proxy
         isDefault: true
-        jsonData:
-          httpHeaderName1: X-Scope-OrgID
-        secureJsonData:
-          httpHeaderValue1: dawet
       - name: Loki
         type: loki
-        url: http://loki-gateway.observability.svc:3100
+        url: http://loki.observability.svc:3100
         access: proxy
-        jsonData:
-          httpHeaderName1: X-Scope-OrgID
-        secureJsonData:
-          httpHeaderValue1: dawet
       - name: Tempo
         type: tempo
-        url: http://tempo-gateway.observability.svc:3200
+        url: http://tempo.observability.svc:3200
         access: proxy
         jsonData:
-          httpHeaderName1: X-Scope-OrgID
           tracesToLogs:
-            datasourceUid: loki
-            tags: ['service.name', 'service.namespace']
-          tracesToMetrics:
-            datasourceUid: mimir
+            datasourceUid: Loki
           serviceMap:
-            datasourceUid: mimir
+            datasourceUid: Prometheus
           nodeGraph:
             enabled: true
-        secureJsonData:
-          httpHeaderValue1: dawet
 
-## Ingress disabled - using NodePort
+# ... rest remains unchanged or handled by sed
 ingress:
   enabled: false
 
-## NodePort access for demo
 service:
   type: NodePort
   port: 3000
   nodePort: 30300
 
-## Resources
 resources:
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 50m
+    memory: 128Mi
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 250m
+    memory: 256Mi
 
 ## Dashboard sidecar
 sidecar:

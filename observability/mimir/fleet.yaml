@@ -1,15 +1,15 @@
 # =============================================================================
-# Mimir (Metrics) - Fleet Bundle (Demo)
+# Prometheus (Metrics) - Fleet Bundle (Demo)
 # =============================================================================
-# Step 8: Prometheus-compatible metrics storage (after dify)
+# Step 8: Lightweight metrics storage using standard Prometheus
 # =============================================================================
 
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts/
-  chart: mimir-distributed
-  version: 6.0.6
+  repo: https://prometheus-community.github.io/helm-charts/
+  chart: prometheus
+  version: 25.21.0
   releaseName: mimir
   valuesFiles:
     - values.yaml

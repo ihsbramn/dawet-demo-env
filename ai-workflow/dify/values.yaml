@@ -11,9 +11,9 @@ api:
     tag: "0.8.0"
   env:
     - name: DB_USERNAME
-      value: "dify"
+      value: "admin"
     - name: DB_PASSWORD
-      value: "dify-db-123"
+      value: "admin-db-123"
     - name: DB_HOST
       value: "postgres-grafana-postgresql.postgres-system.svc"
     - name: DB_PORT
@@ -51,21 +51,21 @@ api:
       value: "not-needed-for-local"
   resources:
     requests:
-      cpu: 200m
-      memory: 512Mi
+      cpu: 100m
+      memory: 256Mi
     limits:
-      cpu: 1000m
-      memory: 2Gi
+      cpu: 500m
+      memory: 512Mi
 
 worker:
   replicas: 1
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 50m
+      memory: 128Mi
     limits:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 256Mi
 
 web:
   replicas: 1

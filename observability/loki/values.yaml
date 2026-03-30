@@ -1,56 +1,57 @@
 # =============================================================================
-# Loki - Helm Values (Demo)
+# Loki (Monolithic) - Helm Values (Demo)
 # =============================================================================
-# Log Storage | MinIO Backend | SingleBinary mode
+# Ultra-lightweight: Single Binary mode (8GB RAM optimization)
 # =============================================================================
-
-deploymentMode: SingleBinary
 
 loki:
+  deploymentMode: SingleBinary
+  
   auth_enabled: false
+  
   commonConfig:
     replication_factor: 1
-  schemaConfig:
-    configs:
-      - from: "2024-01-01"
-        store: tsdb
-        object_store: s3
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
+    
   storage:
     type: s3
     s3:
       endpoint: minio.minio-system.svc:9000
-      bucketnames: loki-data
-      access_key_id: minio-admin
-      secret_access_key: minio-secret-123
-      insecure: true
+      bucketNames:
+        chunks: loki-chunks
+        ruler: loki-ruler
+        admin: loki-admin
+      accessKeyId: minio-admin
+      secretAccessKey: minio-secret-123
       s3ForcePathStyle: true
-  limits_config:
-    retention_period: 168h  # 7 days for demo
-    allow_structured_metadata: true
+      insecure: true
 
 singleBinary:
   replicas: 1
-  persistence:
-    storageClass: hostpath
-    size: 5Gi
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 50m
+      memory: 128Mi
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 256Mi
+  persistence:
+    enabled: true
+    storageClass: hostpath
+    size: 2Gi
 
-gateway:
-  enabled: true
-  replicas: 1
+# Disable all distributed components
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
 
+# Disable service monitor
 monitoring:
   serviceMonitor:
     enabled: false
-    labels:
-      release: grafana
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false
