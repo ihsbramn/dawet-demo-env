@@ -9,6 +9,10 @@ global:
 api:
   enabled: true
   replicas: 1
+  image:
+    repository: "langgenius/dify-api"
+    tag: "main"
+    pullPolicy: Always
   resources:
     requests:
       cpu: 100m
@@ -31,20 +35,35 @@ api:
 web:
   enabled: true
   replicas: 1
+  image:
+    repository: "langgenius/dify-web"
+    tag: "main"
+    pullPolicy: Always
   service:
     port: 3000
 
 worker:
   enabled: true
   replicas: 1
+  image:
+    repository: "langgenius/dify-api"
+    tag: "main"
+    pullPolicy: Always
 
 sandbox:
   enabled: true
   replicas: 1
+  image:
+    repository: "langgenius/dify-sandbox"
+    tag: "0.2.12"
+    pullPolicy: Always
 
-## Enable Plugin Daemon with HostPath persistence
 pluginDaemon:
   enabled: true
+  image:
+    repository: "langgenius/dify-plugin-daemon"
+    tag: "main-local"
+    pullPolicy: Always
   persistence:
     enabled: true
     mountPath: "/app/storage"
