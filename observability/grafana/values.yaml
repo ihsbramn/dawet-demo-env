@@ -16,7 +16,7 @@ initChownData:
   enabled: true
   image:
     repository: busybox
-    tag: 1.36.1
+    tag: 1.37.0
 
 ## Database - PostgreSQL
 grafana.ini:

@@ -35,12 +35,14 @@ api:
       value: "8080"
 
 # Satisfy subchart secret templates even if enabled: false
+# Dify chart uses 'postgresql.auth.password' or 'postgresql.postgresql.auth.password'
 postgresql:
   enabled: false
-  postgresql: # Bitnami subchart nesting
-    auth:
-      password: "admin-db-123"
-      postgresPassword: "admin-db-123"
+  auth:
+    database: "dify_db"
+    username: "admin"
+    password: "admin-db-123"
+    postgresPassword: "admin-db-123"
 
 redis:
   enabled: false
