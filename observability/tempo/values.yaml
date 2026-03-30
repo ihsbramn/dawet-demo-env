@@ -8,20 +8,14 @@ tempo:
   structuredConfig:
     common:
       storage:
-        backend: s3
-        s3:
-          endpoint: minio.minio-system.svc:9000
-          bucket: tempo-data
-          access_key_id: minio-admin
-          secret_access_key: minio-secret-123
-          insecure: true
+        backend: local
     storage:
       trace:
-        backend: s3
+        backend: local
 
 persistence:
   enabled: true
-  storageClass: local-path
+  storageClass: hostpath
   size: 2Gi
 
 resources:

@@ -12,7 +12,7 @@ auth:
 primary:
   persistence:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 10Gi
   resources:
     requests:

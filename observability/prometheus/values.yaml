@@ -12,7 +12,7 @@ server:
   retention: 7d
   persistentVolume:
     size: 2Gi
-    storageClass: local-path
+    storageClass: hostpath
   resources:
     requests:
       cpu: 50m

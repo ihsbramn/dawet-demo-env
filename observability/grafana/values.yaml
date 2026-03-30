@@ -9,7 +9,7 @@ adminPassword: admin-demo-123
 
 persistence:
   enabled: true
-  storageClassName: local-path
+  storageClassName: hostpath
   size: 2Gi
 
 ## Database - PostgreSQL
@@ -32,7 +32,7 @@ datasources:
     datasources:
       - name: Prometheus
         type: prometheus
-        url: http://mimir.observability.svc:9090
+        url: http://prometheus.observability.svc:9090
         access: proxy
         isDefault: true
       - name: Loki
