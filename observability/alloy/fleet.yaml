@@ -1,6 +1,8 @@
 # =============================================================================
 # Alloy (OTel Collector) - Fleet Bundle (Demo)
 # =============================================================================
+# Step 8: OpenTelemetry collector DaemonSet
+# =============================================================================
 
 defaultNamespace: observability
 
@@ -13,12 +15,6 @@ helm:
     - values.yaml
 
 dependsOn:
-  - selector:
-      matchLabels:
-        bundle: mimir
-  - selector:
-      matchLabels:
-        bundle: loki
   - selector:
       matchLabels:
         bundle: tempo

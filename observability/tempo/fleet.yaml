@@ -1,6 +1,8 @@
 # =============================================================================
 # Tempo (Traces) - Fleet Bundle (Demo)
 # =============================================================================
+# Step 7: Distributed tracing with MinIO backend
+# =============================================================================
 
 defaultNamespace: observability
 
@@ -15,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: minio
+        bundle: loki
 
 targetCustomizations:
   - name: dev

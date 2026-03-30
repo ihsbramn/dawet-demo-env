@@ -1,6 +1,8 @@
 # =============================================================================
 # OpenTelemetry Demo - Fleet Bundle (Demo)
 # =============================================================================
+# Step 15: Sample app that generates traces/metrics/logs
+# =============================================================================
 
 defaultNamespace: sample-apps
 
@@ -15,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: alloy
+        bundle: resource-quotas
 
 targetCustomizations:
   - name: dev

@@ -36,18 +36,27 @@ dawet-demo-env/
     └── validate-deps.sh
 ```
 
-## 🏗️ Deployment Order
+## 🏗️ Deployment Order (Sequential)
 
 ```
-1. minio
-2. postgres-cluster
-3. redis
-            │
-            ├── 5. mimir / loki / tempo
-            ├── 6. dify / milvus / n8n
-            │
-            └── 7. alloy → 8. grafana → 9. otel-demo
+ 1. namespaces           # Create all namespaces + PSS labels
+ 2. minio                # Object storage (S3)
+ 3. postgres-cluster     # PostgreSQL databases
+ 4. redis                # Cache & message queue
+ 5. mimir                # Metrics backend
+ 6. loki                 # Logs backend
+ 7. tempo                # Traces backend
+ 8. alloy                # OTel collector (DaemonSet)
+ 9. grafana              # Dashboards
+10. milvus               # Vector DB
+11. n8n                  # Workflow automation
+12. dify                 # RAG & LLM Ops
+13. network-policies     # Network segmentation
+14. resource-quotas      # Resource limits
+15. otel-demo            # Sample app
 ```
+
+Each step waits for the previous one to become **Active** before starting.
 
 ## 🚀 Deploy
 

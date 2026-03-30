@@ -1,7 +1,7 @@
 # =============================================================================
 # MinIO Object Storage - Fleet Bundle (Demo)
 # =============================================================================
-# S3-compatible storage for Loki, Mimir, Tempo, and Dify
+# Step 2: S3-compatible storage for Loki, Mimir, Tempo, and Dify
 # =============================================================================
 
 defaultNamespace: minio-system

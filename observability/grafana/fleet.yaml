@@ -1,6 +1,8 @@
 # =============================================================================
 # Grafana - Fleet Bundle (Demo)
 # =============================================================================
+# Step 9: Dashboards & Alerting
+# =============================================================================
 
 defaultNamespace: observability
 
@@ -15,16 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: postgres-cluster
-  - selector:
-      matchLabels:
-        bundle: mimir
-  - selector:
-      matchLabels:
-        bundle: loki
-  - selector:
-      matchLabels:
-        bundle: tempo
+        bundle: alloy
 
 targetCustomizations:
   - name: dev

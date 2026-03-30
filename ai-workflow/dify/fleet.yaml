@@ -1,6 +1,8 @@
 # =============================================================================
 # Dify - Fleet Bundle (Demo)
 # =============================================================================
+# Step 12: RAG & LLM Ops platform
+# =============================================================================
 
 defaultNamespace: ai-workflow
 
@@ -15,16 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: minio
-  - selector:
-      matchLabels:
-        bundle: redis
-  - selector:
-      matchLabels:
-        bundle: postgres-cluster
-  - selector:
-      matchLabels:
-        bundle: milvus
+        bundle: n8n
 
 targetCustomizations:
   - name: dev

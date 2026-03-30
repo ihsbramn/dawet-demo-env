@@ -1,7 +1,7 @@
 # =============================================================================
 # PostgreSQL Cluster - Fleet Bundle (Demo)
 # =============================================================================
-# 3 PostgreSQL instances: grafana_db, milvus_meta, n8n_db
+# Step 3: 3 PostgreSQL instances: grafana_db, milvus_meta, n8n_db
 # =============================================================================
 
 defaultNamespace: postgres-system
@@ -17,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: namespaces
+        bundle: minio
 
 targetCustomizations:
   - name: dev

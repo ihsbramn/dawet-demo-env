@@ -1,6 +1,8 @@
 # =============================================================================
 # n8n Workflow Automation - Fleet Bundle (Demo)
 # =============================================================================
+# Step 11: Workflow automation engine
+# =============================================================================
 
 defaultNamespace: ai-workflow
 
@@ -15,10 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: postgres-cluster
-  - selector:
-      matchLabels:
-        bundle: redis
+        bundle: milvus
 
 targetCustomizations:
   - name: dev

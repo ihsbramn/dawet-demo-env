@@ -1,7 +1,7 @@
 # =============================================================================
 # Redis - Fleet Bundle (Demo)
 # =============================================================================
-# Required: Dify, Milvus, n8n
+# Step 4: Required by Dify, Milvus, n8n
 # =============================================================================
 
 defaultNamespace: redis-system
@@ -17,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: namespaces
+        bundle: postgres-cluster
 
 targetCustomizations:
   - name: dev

@@ -1,6 +1,8 @@
 # =============================================================================
 # Loki (Logs) - Fleet Bundle (Demo)
 # =============================================================================
+# Step 6: Log aggregation with MinIO backend
+# =============================================================================
 
 defaultNamespace: observability
 
@@ -15,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: minio
+        bundle: mimir
 
 targetCustomizations:
   - name: dev

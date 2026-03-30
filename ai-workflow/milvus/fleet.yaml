@@ -1,6 +1,8 @@
 # =============================================================================
 # Milvus Vector DB - Fleet Bundle (Demo)
 # =============================================================================
+# Step 10: Vector DB for Dify RAG
+# =============================================================================
 
 defaultNamespace: ai-workflow
 
@@ -15,13 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: minio
-  - selector:
-      matchLabels:
-        bundle: postgres-cluster
-  - selector:
-      matchLabels:
-        bundle: redis
+        bundle: grafana
 
 targetCustomizations:
   - name: dev

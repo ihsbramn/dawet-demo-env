@@ -1,6 +1,8 @@
 # =============================================================================
 # Mimir (Metrics) - Fleet Bundle (Demo)
 # =============================================================================
+# Step 5: Prometheus-compatible metrics storage
+# =============================================================================
 
 defaultNamespace: observability
 
@@ -15,7 +17,7 @@ helm:
 dependsOn:
   - selector:
       matchLabels:
-        bundle: minio
+        bundle: redis
 
 targetCustomizations:
   - name: dev

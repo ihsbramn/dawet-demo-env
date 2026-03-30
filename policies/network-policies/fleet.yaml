@@ -1,12 +1,14 @@
 # =============================================================================
 # Network Policies - Fleet Bundle (Demo)
 # =============================================================================
+# Step 13: Network segmentation
+# =============================================================================
 defaultNamespace: ""
 
 dependsOn:
   - selector:
       matchLabels:
-        bundle: namespaces
+        bundle: dify
 
 targetCustomizations:
   - name: dev
