@@ -24,7 +24,6 @@ primary:
   initdb:
     scripts:
       init.sql: |
-        CREATE DATABASE milvus_meta;
         CREATE DATABASE n8n_db;
         CREATE DATABASE dify_db;
 

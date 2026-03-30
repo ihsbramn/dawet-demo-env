@@ -17,7 +17,7 @@ helm:
 dependsOn:
  - selector:
      matchLabels:
-       bundle: milvus
+       bundle: weaviate
 
 targetCustomizations:
  - name: dev

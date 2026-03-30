@@ -17,7 +17,7 @@ helm:
 dependsOn:
  - selector:
      matchLabels:
-       bundle: minio
+       bundle: namespaces
 
 targetCustomizations:
  - name: dev

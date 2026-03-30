@@ -1,33 +1,29 @@
 #  =============================================================================
-# MinIO Object Storage - Fleet Bundle (Demo)
+# Prometheus (Metrics) - Fleet Bundle (Demo)
 #  =============================================================================
-# Step 2: S3-compatible storage for Loki, Mimir, Tempo, and Dify
+# Step 8: Lightweight metrics storage using standard Prometheus
 #  =============================================================================
 
-defaultNamespace: minio-system
+defaultNamespace: observability
 
 helm:
- repo: https://charts.min.io/
- chart: minio
- version: 5.4.0
- releaseName: minio
+ repo: https://prometheus-community.github.io/helm-charts/
+ chart: prometheus
+ version: 25.21.0
+ releaseName: prometheus
  valuesFiles:
    - values.yaml
 
 dependsOn:
  - selector:
      matchLabels:
-       bundle: local-path-provisioner
+       bundle: dify
 
 targetCustomizations:
  - name: dev
    clusterSelector:
      matchLabels:
        env: dev
-   helm:
-     valuesFiles:
-       - values.yaml
-       - overlays/dev-values.yaml
 
 labels:
- bundle: minio
+ bundle: prometheus

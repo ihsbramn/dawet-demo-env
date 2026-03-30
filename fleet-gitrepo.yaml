@@ -1,0 +1,14 @@
+apiVersion: fleet.cattle.io/v1alpha1
+kind: GitRepo
+metadata:
+  name: dawet-demo-env
+  namespace: fleet-default
+spec:
+  repo: https://github.com/ihsbramn/dawet-demo-env.git
+  branch: main
+  paths:
+    - infrastructure
+    - observability
+    - ai-workflow
+    - sample-apps
+    - policies
