@@ -5,7 +5,7 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://grafana.github.io/helm-charts
+  repo: https://grafana.github.io/helm-charts/
   chart: tempo-distributed
   version: 1.15.0
   releaseName: tempo

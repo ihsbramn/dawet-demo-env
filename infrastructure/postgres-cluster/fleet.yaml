@@ -7,7 +7,7 @@
 defaultNamespace: postgres-system
 
 helm:
-  repo: https://charts.bitnami.com/bitnami
+  repo: https://charts.bitnami.com/bitnami/
   chart: postgresql
   version: 15.5.0
   releaseName: postgres-grafana

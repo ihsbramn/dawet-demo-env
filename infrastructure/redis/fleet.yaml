@@ -7,7 +7,7 @@
 defaultNamespace: redis-system
 
 helm:
-  repo: https://charts.bitnami.com/bitnami
+  repo: https://charts.bitnami.com/bitnami/
   chart: redis
   version: 19.6.0
   releaseName: redis

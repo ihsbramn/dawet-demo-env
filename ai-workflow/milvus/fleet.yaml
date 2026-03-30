@@ -5,7 +5,7 @@
 defaultNamespace: ai-workflow
 
 helm:
-  repo: https://zilliztech.github.io/milvus-helm
+  repo: https://zilliztech.github.io/milvus-helm/
   chart: milvus
   version: 4.2.0
   releaseName: milvus

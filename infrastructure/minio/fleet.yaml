@@ -7,7 +7,7 @@
 defaultNamespace: minio-system
 
 helm:
-  repo: https://charts.min.io
+  repo: https://charts.min.io/
   chart: minio
   version: 5.2.0
   releaseName: minio

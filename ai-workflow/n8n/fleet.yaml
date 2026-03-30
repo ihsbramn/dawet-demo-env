@@ -5,7 +5,7 @@
 defaultNamespace: ai-workflow
 
 helm:
-  repo: https://community-charts.github.io/helm-charts
+  repo: https://community-charts.github.io/helm-charts/
   chart: n8n
   version: 1.16.34
   releaseName: n8n
