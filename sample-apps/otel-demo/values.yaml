@@ -23,48 +23,45 @@ grafana:
 opensearch:
   enabled: false
 
-## Component configuration (Top-Level subcharts in 0.40.6)
-frontend:
-  enabled: true
-  service:
-    type: NodePort
-    port: 8080
-    nodePort: 30800
-ad:
-  enabled: true
-cart:
-  enabled: true
-checkout:
-  enabled: true
-currency:
-  enabled: true
-email:
-  enabled: true
-payment:
-  enabled: true
-product-catalog:
-  enabled: true
-recommendation:
-  enabled: true
-shipping:
-  enabled: true
-load-generator:
-  enabled: true
-fraud-detection:
-  enabled: false
-quote:
-  enabled: false
-image-provider:
-  enabled: false
-llm:
-  enabled: false
-post-processing:
-  enabled: false
-postgresql:
-  enabled: false
-kafka:
-  enabled: false
-valkey-cart:
-  enabled: false
-monitoring:
-  enabled: false
+## Component configuration (Back under components, using SHORT NAMES)
+components:
+  frontend:
+    enabled: true
+    service:
+      type: NodePort
+      port: 8080
+      nodePort: 30800
+  ad:
+    enabled: true
+  cart:
+    enabled: true
+  checkout:
+    enabled: true
+  currency:
+    enabled: true
+  email:
+    enabled: true
+  payment:
+    enabled: true
+  product-catalog:
+    enabled: true
+  recommendation:
+    enabled: true
+  shipping:
+    enabled: true
+  load-generator:
+    enabled: true
+  fraud-detection:
+    enabled: false
+  quote:
+    enabled: false
+  image-provider:
+    enabled: false
+  llm:
+    enabled: false
+  postgresql:
+    enabled: false
+  kafka:
+    enabled: false
+  valkey-cart:
+    enabled: false

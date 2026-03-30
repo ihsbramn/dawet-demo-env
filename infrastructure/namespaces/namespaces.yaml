@@ -1,28 +1,11 @@
 # =============================================================================
-# Namespace Definitions (Demo)
-# =============================================================================
-# All namespaces use 'privileged' PSS to avoid pod blocking in demo
+# Namespaces - Kubernetes Manifest (Demo)
 # =============================================================================
 
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: observability
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: ai-workflow
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: postgres-system
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: redis-system
 ---
 apiVersion: v1
 kind: Namespace

@@ -7,7 +7,7 @@
 loki:
   deploymentMode: SingleBinary
   auth_enabled: false
-  useTestSchema: true
+  useTestSchema: false
   
   commonConfig:
     replication_factor: 1

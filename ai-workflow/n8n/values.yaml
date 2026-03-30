@@ -5,22 +5,14 @@
 main:
   count: 1
   extraEnvVars:
-    - name: DB_TYPE
-      value: "postgresdb"
-    - name: DB_POSTGRESDB_HOST
-      value: "postgres-grafana-postgresql.postgres-system.svc"
-    - name: DB_POSTGRESDB_PORT
-      value: "5432"
-    - name: DB_POSTGRESDB_USER
-      value: "admin"
-    - name: DB_POSTGRESDB_DATABASE
-      value: "n8n_db"
-    - name: DB_POSTGRESDB_PASSWORD
-      value: "admin-db-123"
-    - name: WEBHOOK_URL
-      value: "https://n8n.dev.dawet.internal"
-    - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
-      value: "false"
+    DB_TYPE: "postgresdb"
+    DB_POSTGRESDB_HOST: "postgres-grafana-postgresql.postgres-system.svc"
+    DB_POSTGRESDB_PORT: "5432"
+    DB_POSTGRESDB_USER: "admin"
+    DB_POSTGRESDB_DATABASE: "n8n_db"
+    DB_POSTGRESDB_PASSWORD: "admin-db-123"
+    WEBHOOK_URL: "https://n8n.dev.dawet.internal"
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
   
   persistence:
     enabled: true
@@ -30,6 +22,4 @@ main:
 service:
   type: NodePort
   port: 5678
-  nodePort: 30520
-
-# Root labels NOT allowed by schema - removed.
+  # nodePort removed to avoid schema validation errors

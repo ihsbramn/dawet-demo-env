@@ -22,7 +22,7 @@ api:
     mountPath: "/app/api/storage"
     persistentVolumeClaim:
       storageClass: hostpath
-      accessModes: [ReadWriteMany]
+      accessModes: "ReadWriteMany"
       size: 5Gi
   
   service:
@@ -50,7 +50,7 @@ pluginDaemon:
     mountPath: "/app/storage"
     persistentVolumeClaim:
       storageClass: hostpath
-      accessModes: [ReadWriteMany]
+      accessModes: "ReadWriteMany"
       size: 5Gi
 
 ## =============================================================================
@@ -59,13 +59,13 @@ pluginDaemon:
 
 postgresql:
   enabled: true
-  fullnameOverride: "dify-db-v3" # Bump version to avoid PVC claim errors
+  fullnameOverride: "dify-db-v4" # Bump v4 to avoid PVC claim errors
   architecture: standalone
   primary:
     persistence:
       enabled: true
       storageClass: hostpath
-      size: 8Gi
+      size: 2Gi
   global:
     storageClass: hostpath
   auth:
@@ -77,18 +77,18 @@ postgresql:
 
 redis:
   enabled: true
-  fullnameOverride: "dify-redis-v3"
+  fullnameOverride: "dify-redis-v4"
   master:
     persistence:
       enabled: true
       storageClass: hostpath
-      size: 8Gi
+      size: 2Gi
   global:
     storageClass: hostpath
 
 weaviate:
   enabled: true
-  fullnameOverride: "dify-weaviate-v3"
+  fullnameOverride: "dify-weaviate-v4"
   storage:
     storageClassName: hostpath
     size: 2Gi
