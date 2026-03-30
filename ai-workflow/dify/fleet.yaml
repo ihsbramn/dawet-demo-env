@@ -5,9 +5,9 @@
 defaultNamespace: ai-workflow
 
 helm:
-  repo: https://difyai.github.io/helm-charts
+  repo: https://langgenius.github.io/dify-helm
   chart: dify
-  version: 0.3.0
+  version: 3.8.0
   releaseName: dify
   valuesFiles:
     - values.yaml

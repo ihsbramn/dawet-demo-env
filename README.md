@@ -8,8 +8,6 @@
 ```
 dawet-demo-env/
 ├── fleet.yaml                      # Root aggregation config
-├── clusters/
-│   └── dev/cluster.yaml            # Dev cluster definition
 ├── infrastructure/
 │   ├── local-path-provisioner/     # StorageClass
 │   ├── minio/                      # Object Storage (S3-compatible)
@@ -75,6 +73,19 @@ spec:
     - clusterSelector:
         matchLabels:
           env: dev
+```
+
+### Cluster Labeling (Critical)
+
+For this single cluster demo to target your **local** cluster, you must add the `env: dev` label:
+
+1.  Go to **Continuous Delivery > Clusters** in Rancher.
+2.  Find the `local` cluster.
+3.  Click **Edit Config** and add a label: `env=dev`.
+
+Alternatively, use this command:
+```bash
+kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 ```
 
 ## 📦 Components
