@@ -363,7 +363,7 @@ components:
         value: $(OTEL_COLLECTOR_NAME)
     resources:
       limits:
-        memory: 50Mi
+        memory: 500Mi
 
   load-generator:
     enabled: true
@@ -404,7 +404,7 @@ components:
         value: http://$(OTEL_COLLECTOR_NAME):4317
     resources:
       limits:
-        memory: 512Mi # Reduced from 1500Mi for 8GB Mac optimization
+        memory: 2Gi # Reduced from 1500Mi for 8GB Mac optimization
 
   payment:
     enabled: true
