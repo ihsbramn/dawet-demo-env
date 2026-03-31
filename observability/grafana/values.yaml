@@ -8,7 +8,7 @@ adminUser: admin
 adminPassword: admin-demo-123
 
 persistence:
-  enabled: true
+  enabled: false
   storageClassName: local-path
   size: 2Gi
 
