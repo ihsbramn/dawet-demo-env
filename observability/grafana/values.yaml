@@ -52,6 +52,9 @@ datasources:
         url: http://kube-prometheus-stack-prometheus.observability:9090/
         access: proxy
         isDefault: true
+        jsonData:
+          httpMethod: POST 
+          timeInterval: 30s
       # Loki — logs (Alloy ships via loki.write, 7-day retention)
       - name: Loki
         uid: loki
