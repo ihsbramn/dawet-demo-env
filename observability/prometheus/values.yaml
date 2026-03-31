@@ -1,36 +1,56 @@
 # =============================================================================
-# Prometheus (Mimir Substitute) - Helm Values (Demo)
+# Kube Prometheus Stack - Helm Values (Demo)
 # =============================================================================
-# Ultra-lightweight Prometheus for 8GB RAM Mac
+# Ultra-lightweight kube-prometheus-stack for 8GB RAM Mac
 # =============================================================================
 
+# Disable Grafana to keep it lightweight (use external or separate deployment)
+grafana:
+  enabled: false
+
+# Disable Alertmanager for demo simplicity
 alertmanager:
   enabled: false
 
-server:
-  replicaCount: 1
-  retention: 7d
-  persistentVolume:
-    size: 2Gi
-    storageClass: local-path
+# Prometheus configuration
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    # Enable OTLP write receiver feature
+    additionalArgs:
+      - name: enable-feature
+        value: otlp-write-receiver
+
+# Disable node exporter for minimal footprint
+nodeExporter:
+  enabled: false
+
+# kube-state-metrics - disable for demo
+kubeStateMetrics:
+  enabled: false
+
+# Prometheus Operator
+prometheusOperator:
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 64Mi
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 200m
+      memory: 256Mi
 
-# Minimal set of exporters for demo
-prometheus-pushgateway:
-  enabled: false
-
-prometheus-node-exporter:
-  enabled: false
-
-kube-state-metrics:
-  enabled: false
-
-# Configure OTLP/Remote Write compatibility
-extraArgs:
-  enable-feature: otlp-write-receiver

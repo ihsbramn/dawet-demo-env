@@ -1,25 +1,25 @@
 #  =============================================================================
-# Prometheus (Metrics) - Fleet Bundle (Demo)
+# Kube Prometheus Stack (Metrics) - Fleet Bundle (Demo)
 #  =============================================================================
-# Step 8: Lightweight metrics storage using standard Prometheus
+# Step 8: Full Kubernetes metrics stack using kube-prometheus-stack
 #  =============================================================================
 
 defaultNamespace: observability
 
 helm:
- repo: https://prometheus-community.github.io/helm-charts/
- chart: prometheus
- version: 25.21.0
- releaseName: prometheus
- valuesFiles:
-   - values.yaml
+  repo: https://prometheus-community.github.io/helm-charts/
+  chart: kube-prometheus-stack
+  version: 82.15.1
+  releaseName: kube-prometheus-stack
+  valuesFiles:
+    - values.yaml
 
- 
 targetCustomizations:
- - name: dev
-   clusterSelector:
-     matchLabels:
-       env: dev
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
 
 labels:
- bundle: prometheus
+  bundle: kube-prometheus-stack
+
