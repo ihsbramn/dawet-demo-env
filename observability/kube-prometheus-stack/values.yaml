@@ -46,27 +46,27 @@ grafana:
   assertNoLeakedSecrets: false
 
   ## Datasources — Prometheus (default) + Loki + Tempo cross-linked
-  additionalDataSources:
-    # Loki — logs (Alloy ships via loki.write, 7-day retention)
-    - name: Loki
-      uid: loki
-      type: loki
-      url: http://loki-gateway.observability:80/
-      access: proxy
-      isDefault: false
-    # Tempo — traces (Alloy ships via OTLP, 7-day retention)
-    - name: Tempo
-      uid: tempo
-      type: tempo
-      url: http://tempo.observability:3200/
-      access: proxy
-      jsonData:
-        tracesToLogs:
-          datasourceUid: loki
-        serviceMap:
-          datasourceUid: prometheus
-        nodeGraph:
-          enabled: true
+  # additionalDataSources:
+  #   # Loki — logs (Alloy ships via loki.write, 7-day retention)
+  #   - name: Loki
+  #     uid: loki
+  #     type: loki
+  #     url: http://loki-gateway.observability:80/
+  #     access: proxy
+  #     isDefault: false
+  #   # Tempo — traces (Alloy ships via OTLP, 7-day retention)
+  #   - name: Tempo
+  #     uid: tempo
+  #     type: tempo
+  #     url: http://tempo.observability:3200/
+  #     access: proxy
+  #     jsonData:
+  #       tracesToLogs:
+  #         datasourceUid: loki
+  #       serviceMap:
+  #         datasourceUid: prometheus
+  #       nodeGraph:
+  #         enabled: true
 
   ## The built-in Prometheus datasource is auto-configured by kube-prometheus-stack
   ## pointing to the in-cluster Prometheus service — no manual config needed.
