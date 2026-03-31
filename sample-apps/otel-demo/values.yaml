@@ -1,80 +1,796 @@
 # =============================================================================
-# OpenTelemetry Demo - Helm Values (v0.105.0)
+# OpenTelemetry Demo - Helm Values (Customized for Dawet Fleet)
 # =============================================================================
-# Updated to modern chart structure with external Alloy collector
-# Ref: https://opentelemetry.io/docs/platforms/kubernetes/helm/demo/
+# Optimized for 8GB RAM: Using Unified LGTM (Alloy/Loki/Grafana/Tempo)
 # =============================================================================
 
+# yaml-language-server: $schema=./values.schema.json
 default:
-  # native chart settings for external collector
-  otlpCollectorEndpoint: http://alloy.observability:4317
-  otlpCollectorProtocol: grpc
+  # List of environment variables applied to all components
   env:
     - name: OTEL_SERVICE_NAME
       valueFrom:
         fieldRef:
           apiVersion: v1
-          fieldPath: metadata.labels['app.kubernetes.io/component']
+          fieldPath: "metadata.labels['app.kubernetes.io/component']"
+    - name: OTEL_COLLECTOR_NAME
+      value: alloy.observability
+    - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+      value: cumulative
+  
+  # Forward-compatible keys for OTel Demo Chart v0.100+
+  otlpCollectorEndpoint: http://alloy.observability:4317
+  otlpCollectorProtocol: grpc
 
-## Disable built-in collectors (using Alloy instead) 
-opentelemetry-collector:
-  enabled: false
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  replicas: 1
+  revisionHistoryLimit: 10
+  schedulingRules:
+    nodeSelector: {}
+    affinity: {}
+    tolerations: []
+  securityContext: {}
 
-## Disable built-in backends (using our LGTM stack)
-jaeger:
-  enabled: false
-prometheus:
-  enabled: false
-grafana:
-  enabled: false
-opensearch:
-  enabled: false
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
 
-## Component configuration (Updated to 0.105.0 naming convention)
 components:
+  accounting:
+    enabled: true
+    useDefault:
+      env: true
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: KAFKA_ADDR
+        value: kafka:9092
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: DB_CONNECTION_STRING
+        value: Host=postgresql;Username=otelu;Password=otelp;Database=otel
+      - name: OTEL_DOTNET_AUTO_TRACES_ENTITYFRAMEWORKCORE_INSTRUMENTATION_ENABLED
+        value: "false"
+    resources:
+      limits:
+        memory: 120Mi
+    initContainers:
+      - name: wait-for-kafka
+        image: busybox:latest
+        command: ["sh", "-c", "until nc -z -v -w30 kafka 9092; do echo waiting for kafka; sleep 2; done;"]
+
+  ad:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: AD_PORT
+        value: "8080"
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: OTEL_LOGS_EXPORTER
+        value: otlp
+    resources:
+      limits:
+        memory: 300Mi
+
+  cart:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: CART_PORT
+        value: "8080"
+      - name: ASPNETCORE_URLS
+        value: http://*:$(CART_PORT)
+      - name: VALKEY_ADDR
+        value: valkey-cart:6379
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+    resources:
+      limits:
+        memory: 160Mi
+    initContainers:
+      - name: wait-for-valkey-cart
+        image: busybox:latest
+        command: ["sh", "-c", "until nc -z -v -w30 valkey-cart 6379; do echo waiting for valkey-cart; sleep 2; done;"]
+
+  checkout:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: CHECKOUT_PORT
+        value: "8080"
+      - name: CART_ADDR
+        value: cart:8080
+      - name: CURRENCY_ADDR
+        value: currency:8080
+      - name: EMAIL_ADDR
+        value: http://email:8080
+      - name: PAYMENT_ADDR
+        value: payment:8080
+      - name: PRODUCT_CATALOG_ADDR
+        value: product-catalog:8080
+      - name: SHIPPING_ADDR
+        value: http://shipping:8080
+      - name: KAFKA_ADDR
+        value: kafka:9092
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+      - name: GOMEMLIMIT
+        value: 16MiB
+    resources:
+      limits:
+        memory: 20Mi
+    initContainers:
+      - name: wait-for-kafka
+        image: busybox:latest
+        command: ["sh", "-c", "until nc -z -v -w30 kafka 9092; do echo waiting for kafka; sleep 2; done;"]
+
+  currency:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: CURRENCY_PORT
+        value: "8080"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+      - name: VERSION
+        value: "{{ .Chart.AppVersion }}"
+      - name: IPV6_ENABLED
+        value: "false"
+    resources:
+      limits:
+        memory: 20Mi
+
+  email:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: EMAIL_PORT
+        value: "8080"
+      - name: APP_ENV
+        value: production
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+    resources:
+      limits:
+        memory: 100Mi
+
+  fraud-detection:
+    enabled: true
+    useDefault:
+      env: true
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: KAFKA_ADDR
+        value: kafka:9092
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL_SPAN_ATTRIBUTES
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_MESSAGING_EXPERIMENTAL_RECEIVE_TELEMETRY_ENABLED
+        value: "true"
+    resources:
+      limits:
+        memory: 300Mi
+    initContainers:
+      - name: wait-for-kafka
+        image: busybox:latest
+        command: ["sh", "-c", "until nc -z -v -w30 kafka 9092; do echo waiting for kafka; sleep 2; done;"]
+
   frontend:
     enabled: true
+    useDefault:
+      env: true
     service:
       type: NodePort
       port: 8080
       nodePort: 30800
-  adservice:
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: FRONTEND_PORT
+        value: "8080"
+      - name: PORT
+        value: $(FRONTEND_PORT)
+      - name: FRONTEND_ADDR
+        value: :8080
+      - name: AD_ADDR
+        value: ad:8080
+      - name: CART_ADDR
+        value: cart:8080
+      - name: CHECKOUT_ADDR
+        value: checkout:8080
+      - name: CURRENCY_ADDR
+        value: currency:8080
+      - name: PRODUCT_CATALOG_ADDR
+        value: product-catalog:8080
+      - name: PRODUCT_REVIEWS_ADDR
+        value: product-reviews:3551
+      - name: RECOMMENDATION_ADDR
+        value: recommendation:8080
+      - name: SHIPPING_ADDR
+        value: http://shipping:8080
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: ENV_PLATFORM
+        value: kubernetes
+      - name: OTEL_COLLECTOR_HOST
+        value: $(OTEL_COLLECTOR_NAME)
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+      - name: WEB_OTEL_SERVICE_NAME
+        value: frontend-web
+      - name: PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+        value: http://localhost:8080/otlp-http/v1/traces
+    resources:
+      limits:
+        memory: 250Mi
+    securityContext:
+      runAsUser: 1001  # nextjs
+      runAsGroup: 1001
+      runAsNonRoot: true
+
+  frontend-proxy:
     enabled: true
-  cartservice:
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+      io.opentelemetry.discovery.metrics/enabled: 'true'
+      io.opentelemetry.discovery.metrics/scraper: httpcheck
+      io.opentelemetry.discovery.metrics/config: |
+          targets:
+            - endpoint: "http://`endpoint`"
+    env:
+      - name: ENVOY_PORT
+        value: "8080"
+      - name: ENVOY_ADDR
+        value: "0.0.0.0"
+      - name: ENVOY_ADMIN_PORT
+        value: "10000"
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: FLAGD_UI_HOST
+        value: flagd
+      - name: FLAGD_UI_PORT
+        value: "4000"
+      - name: FRONTEND_HOST
+        value: frontend
+      - name: FRONTEND_PORT
+        value: "8080"
+      - name: GRAFANA_HOST
+        value: grafana
+      - name: GRAFANA_PORT
+        value: "80"
+      - name: IMAGE_PROVIDER_HOST
+        value: image-provider
+      - name: IMAGE_PROVIDER_PORT
+        value: "8081"
+      - name: JAEGER_HOST
+        value: jaeger
+      - name: JAEGER_UI_PORT
+        value: "16686"
+      - name: LOCUST_WEB_HOST
+        value: load-generator
+      - name: LOCUST_WEB_PORT
+        value: "8089"
+      - name: OTEL_COLLECTOR_HOST
+        value: $(OTEL_COLLECTOR_NAME)
+      - name: OTEL_COLLECTOR_PORT_GRPC
+        value: "4317"
+      - name: OTEL_COLLECTOR_PORT_HTTP
+        value: "4318"
+    resources:
+      limits:
+        memory: 65Mi
+    securityContext:
+      runAsUser: 101  # envoy
+      runAsGroup: 101
+      runAsNonRoot: true
+
+  image-provider:
     enabled: true
-  checkoutservice:
+    useDefault:
+      env: true
+    service:
+      port: 8081
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+      io.opentelemetry.discovery.metrics/enabled: 'true'
+      io.opentelemetry.discovery.metrics/scraper: nginx
+      io.opentelemetry.discovery.metrics/config: |
+          endpoint: "http://`endpoint`/status"
+          collection_interval: "10s"
+          timeout: "20s"
+    env:
+      - name: IMAGE_PROVIDER_PORT
+        value: "8081"
+      - name: OTEL_COLLECTOR_PORT_GRPC
+        value: "4317"
+      - name: OTEL_COLLECTOR_HOST
+        value: $(OTEL_COLLECTOR_NAME)
+    resources:
+      limits:
+        memory: 50Mi
+
+  load-generator:
     enabled: true
-  currencyservice:
-    enabled: true
-  emailservice:
-    enabled: true
-  paymentservice:
-    enabled: true
-  productcatalogservice:
-    enabled: true
-  productreviewservice: # Added as requested (Product Review)
-    enabled: true
-  recommendationservice: # (Recommendation)
-    enabled: true
-  shippingservice:
-    enabled: true
-  loadgenerator: # (Load Generator)
-    enabled: true
+    useDefault:
+      env: true
     service:
       type: NodePort
       port: 8089
       nodePort: 30889
-  frauddetectionservice:
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: LOCUST_WEB_HOST
+        value: "0.0.0.0"
+      - name: LOCUST_WEB_PORT
+        value: "8089"
+      - name: LOCUST_USERS
+        value: "10"
+      - name: LOCUST_SPAWN_RATE
+        value: "1"
+      - name: LOCUST_HOST
+        value: http://frontend-proxy:8080
+      - name: LOCUST_HEADLESS
+        value: "false"
+      - name: LOCUST_AUTOSTART
+        value: "true"
+      - name: LOCUST_BROWSER_TRAFFIC_ENABLED
+        value: "true"
+      - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+        value: python
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: FLAGD_OFREP_PORT
+        value: "8016"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+    resources:
+      limits:
+        memory: 512Mi # Reduced from 1500Mi for 8GB Mac optimization
+
+  payment:
     enabled: true
-  quoteservice:
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: PAYMENT_PORT
+        value: "8080"
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+      - name: IPV6_ENABLED
+        value: "false"
+    resources:
+      limits:
+        memory: 140Mi
+    securityContext:
+      runAsUser: 1000  # node
+      runAsGroup: 1000
+      runAsNonRoot: true
+
+  product-catalog:
     enabled: true
-  imageprovider: # Added as requested (Image Provider)
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: PRODUCT_CATALOG_PORT
+        value: "8080"
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: GOMEMLIMIT
+        value: 16MiB
+      - name: DB_CONNECTION_STRING
+        value: postgres://otelu:otelp@postgresql/otel?sslmode=disable
+      - name: OTEL_SEMCONV_STABILITY_OPT_IN
+        value: database
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+    resources:
+      limits:
+        memory: 20Mi
+
+  product-reviews:
     enabled: true
-  llmservice:
+    useDefault:
+      env: true
+    service:
+      port: 3551
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: OPENAI_API_KEY
+        value: dummy
+      - name: LLM_MODEL
+        value: astronomy-llm
+      - name: LLM_HOST
+        value: llm
+      - name: LLM_PORT
+        value: "8000"
+      - name: LLM_BASE_URL
+        value: http://$(LLM_HOST):$(LLM_PORT)/v1
+      - name: PRODUCT_REVIEWS_PORT
+        value: "3551"
+      - name: PRODUCT_CATALOG_ADDR
+        value: product-catalog:8080
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: DB_CONNECTION_STRING
+        value: host=postgresql user=otelu password=otelp dbname=otel
+      - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+        value: python
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: "true"
+      - name: OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT
+        value: "true"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+    resources:
+      limits:
+        memory: 100Mi
+
+  quote:
     enabled: true
-  postgresql:
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: QUOTE_PORT
+        value: "8080"
+      - name: OTEL_PHP_AUTOLOAD_ENABLED
+        value: "true"
+      - name: OTEL_PHP_INTERNAL_METRICS_ENABLED
+        value: "true"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: IPV6_ENABLED
+        value: "false"
+    resources:
+      limits:
+        memory: 40Mi
+    securityContext:
+      runAsUser: 33  # www-data
+      runAsGroup: 33
+      runAsNonRoot: true
+
+  recommendation:
     enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: RECOMMENDATION_PORT
+        value: "8080"
+      - name: PRODUCT_CATALOG_ADDR
+        value: product-catalog:8080
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: "true"
+      - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+        value: python
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+    resources:
+      limits:
+        memory: 300Mi # Optimized
+
+  shipping:
+    enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8080
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: SHIPPING_PORT
+        value: "8080"
+      - name: QUOTE_ADDR
+        value: http://quote:8080
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4317
+      - name: IPV6_ENABLED
+        value: "false"
+    resources:
+      limits:
+        memory: 20Mi
+
+  flagd:
+    enabled: true
+    imageOverride:
+      repository: "ghcr.io/open-feature/flagd"
+      tag: "v0.12.9"
+    useDefault:
+      env: true
+    replicas: 1
+    ports:
+      - name: rpc
+        value: 8013
+      - name: ofrep
+        value: 8016
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: FLAGD_METRICS_EXPORTER
+        value: otel
+      - name: FLAGD_OTEL_COLLECTOR_URI
+        value: $(OTEL_COLLECTOR_NAME):4317
+      - name: GOMEMLIMIT
+        value: 60MiB
+    resources:
+      limits:
+        memory: 75Mi
+    command:
+      - "/flagd-build"
+      - "start"
+      - "--port"
+      - "8013"
+      - "--ofrep-port"
+      - "8016"
+      - "--uri"
+      - "file:./etc/flagd/demo.flagd.json"
+    mountedEmptyDirs:
+      - name: config-rw
+        mountPath: /etc/flagd
+    sidecarContainers:
+      - name: flagd-ui
+        useDefault:
+          env: true
+        service:
+          port: 4000
+        env:
+          - name: FLAGD_METRICS_EXPORTER
+            value: otel
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4318
+          - name: FLAGD_UI_PORT
+            value: "4000"
+          - name: SECRET_KEY_BASE
+            value: yYrECL4qbNwleYInGJYvVnSkwJuSQJ4ijPTx5tirGUXrbznFIBFVJdPl5t6O9ASw
+          - name: PHX_HOST
+            value: localhost
+        resources:
+          limits:
+            memory: 250Mi
+        volumeMounts:
+          - name: config-rw
+            mountPath: /app/data
+    initContainers:
+      - name: init-config
+        image: busybox
+        command: ["sh", "-c", "cp /config-ro/demo.flagd.json /config-rw/demo.flagd.json && cat /config-rw/demo.flagd.json"]
+        volumeMounts:
+          - mountPath: /config-ro
+            name: config-ro
+          - mountPath: /config-rw
+            name: config-rw
+    additionalVolumes:
+      - name: config-ro
+        configMap:
+          name: flagd-config
+
   kafka:
     enabled: true
-  valkey:
+    useDefault:
+      env: true
+    replicas: 1
+    ports:
+      - name: plaintext
+        value: 9092
+      - name: controller
+        value: 9093
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: KAFKA_ADVERTISED_LISTENERS
+        value: PLAINTEXT://kafka:9092
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://$(OTEL_COLLECTOR_NAME):4318
+      - name: KAFKA_HEAP_OPTS
+        value: "-Xmx300M -Xms300M" # Optimized
+      - name: KAFKA_LISTENERS
+        value: PLAINTEXT://:9092,CONTROLLER://:9093
+      - name: KAFKA_CONTROLLER_LISTENER_NAMES
+        value: CONTROLLER
+      - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+        value: 1@kafka:9093
+    resources:
+      limits:
+        memory: 512Mi # Optimized
+    securityContext:
+      runAsUser: 1000  # appuser
+      runAsGroup: 1000
+      runAsNonRoot: true
+
+  llm:
     enabled: true
+    useDefault:
+      env: true
+    service:
+      port: 8000
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+    env:
+      - name: FLAGD_HOST
+        value: flagd
+      - name: FLAGD_PORT
+        value: "8013"
+
+  postgresql:
+    enabled: true
+    useDefault:
+      env: false
+    imageOverride:
+      repository: "postgres"
+      tag: "17.6"
+    replicas: 1
+    service:
+      port: 5432
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+      io.opentelemetry.discovery.metrics/enabled: 'true'
+      io.opentelemetry.discovery.metrics/scraper: postgresql
+      io.opentelemetry.discovery.metrics/config: |
+        username: root
+        password: otel
+        metrics:
+          postgresql.blks_hit:
+            enabled: true
+          postgresql.blks_read:
+            enabled: true
+          postgresql.tup_fetched:
+            enabled: true
+          postgresql.tup_returned:
+            enabled: true
+          postgresql.tup_inserted:
+            enabled: true
+          postgresql.tup_updated:
+            enabled: true
+          postgresql.tup_deleted:
+            enabled: true
+          postgresql.deadlocks:
+            enabled: true
+        tls:
+          insecure: true
+    env:
+      - name: POSTGRES_USER
+        value: root
+      - name: POSTGRES_PASSWORD
+        value: otel
+      - name: POSTGRES_DB
+        value: otel
+    mountedConfigMaps:
+      - name: postgresql-init
+        mountPath: /docker-entrypoint-initdb.d
+        existingConfigMap: postgresql-init
+    resources:
+      limits:
+        memory: 100Mi
+
+  valkey-cart:
+    enabled: true
+    useDefault:
+      env: false
+    imageOverride:
+      repository: "valkey/valkey"
+      tag: "9.0.1-alpine3.23"
+    replicas: 1
+    ports:
+      - name: valkey-cart
+        value: 6379
+    podAnnotations:
+      resource.opentelemetry.io/service.namespace: otel-demo
+      io.opentelemetry.discovery.metrics/enabled: 'true'
+      io.opentelemetry.discovery.metrics/scraper: redis
+      io.opentelemetry.discovery.metrics/config: |
+        username: valkey
+        collection_interval: 10s
+    resources:
+      limits:
+        memory: 20Mi
+    securityContext:
+      runAsUser: 999  # valkey
+      runAsGroup: 1000
+      runAsNonRoot: true
+
+# ===================== BACKENDS (DISABLED to use External Cluster) =====================
+opentelemetry-collector:
+  enabled: false # Use Alloy in observability namespace
+
+jaeger:
+  enabled: false # Use Tempo via Alloy
+
+prometheus:
+  enabled: false # Use Kube Prometheus Stack via Alloy
+
+grafana:
+  enabled: false # Use Grafana via observability namespace
+
+opensearch:
+  enabled: false # Use Loki (simplified logs)
