@@ -15,7 +15,7 @@ grafana:
 
   # Grafana runs as uid 472 — root init container chowns the local-path volume
   initChownData:
-    enabled: true
+    enabled: false
     securityContext:
       runAsUser: 0
       runAsNonRoot: false
@@ -25,9 +25,11 @@ grafana:
     runAsUser: 472
     runAsGroup: 472
     fsGroup: 472
+
   defaultDashboardsTimezone: Asia/Jakarta
+
   persistence:
-    enabled: true
+    enabled: false
     storageClassName: local-path
     size: 2Gi
 
