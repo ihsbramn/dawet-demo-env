@@ -5,7 +5,7 @@
 default:
   env:
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
-      value: "http://alloy.observability.svc:4317"
+      value: "http://alloy.observability:4317"
     - name: OTEL_EXPORTER_OTLP_PROTOCOL
       value: "grpc"
 
