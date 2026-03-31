@@ -8,6 +8,15 @@
 
 controller:
   type: daemonset
+  extraPorts:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
 
 alloy:
   configMap:
@@ -89,7 +98,7 @@ alloy:
 
       loki.write "loki" {
         endpoint {
-          url = "http://loki-gateway.observability.svc:3100/loki/api/v1/push"
+          url = "http://loki-gateway.observability.svc:80/loki/api/v1/push"
           tenant_id = "dawet"
         }
       }
@@ -148,7 +157,7 @@ tolerations:
 service:
   enabled: true
   type: ClusterIP
-  ports:
+  additionalPorts:
     - name: otlp-grpc
       port: 4317
       targetPort: 4317
