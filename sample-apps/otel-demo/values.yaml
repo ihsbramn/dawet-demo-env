@@ -1,15 +1,22 @@
 # =============================================================================
-# OpenTelemetry Demo - Helm Values (v0.40.6)
+# OpenTelemetry Demo - Helm Values (v0.105.0)
+# =============================================================================
+# Updated to modern chart structure with external Alloy collector
+# Ref: https://opentelemetry.io/docs/platforms/kubernetes/helm/demo/
 # =============================================================================
 
 default:
+  # native chart settings for external collector
+  otlpCollectorEndpoint: http://alloy.observability:4317
+  otlpCollectorProtocol: grpc
   env:
-    - name: OTEL_EXPORTER_OTLP_ENDPOINT
-      value: "http://alloy.observability:4317"
-    - name: OTEL_EXPORTER_OTLP_PROTOCOL
-      value: "grpc"
+    - name: OTEL_SERVICE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['app.kubernetes.io/component']
 
-## Disable built-in collectors (using Alloy instead)
+## Disable built-in collectors (using Alloy instead) 
 opentelemetry-collector:
   enabled: false
 
@@ -23,7 +30,7 @@ grafana:
 opensearch:
   enabled: false
 
-## Component configuration (Back under components, using SHORT NAMES)
+## Component configuration (Updated to 0.105.0 naming convention)
 components:
   frontend:
     enabled: true
@@ -31,37 +38,43 @@ components:
       type: NodePort
       port: 8080
       nodePort: 30800
-  ad:
+  adservice:
     enabled: true
-  cart:
+  cartservice:
     enabled: true
-  checkout:
+  checkoutservice:
     enabled: true
-  currency:
+  currencyservice:
     enabled: true
-  email:
+  emailservice:
     enabled: true
-  payment:
+  paymentservice:
     enabled: true
-  product-catalog:
+  productcatalogservice:
     enabled: true
-  recommendation:
+  productreviewservice: # Added as requested (Product Review)
     enabled: true
-  shipping:
+  recommendationservice: # (Recommendation)
     enabled: true
-  load-generator:
+  shippingservice:
     enabled: true
-  fraud-detection:
+  loadgenerator: # (Load Generator)
     enabled: true
-  quote:
+    service:
+      type: NodePort
+      port: 8089
+      nodePort: 30889
+  frauddetectionservice:
     enabled: true
-  image-provider:
+  quoteservice:
     enabled: true
-  llm:
+  imageprovider: # Added as requested (Image Provider)
+    enabled: true
+  llmservice:
     enabled: true
   postgresql:
     enabled: true
   kafka:
     enabled: true
-  valkey-cart:
+  valkey:
     enabled: true
