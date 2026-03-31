@@ -32,8 +32,7 @@ loki:
       active_index_directory: /data/loki/index
       cache_location: /data/loki/cache
       resync_interval: 5s
-      shared_store: filesystem
-      
+            
   schemaConfig:
     configs:
       - from: 2026-03-01
