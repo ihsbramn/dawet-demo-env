@@ -24,13 +24,13 @@ prometheus:
           resources:
             requests:
               storage: 2Gi
-    resources:
-      requests:
-        cpu: 50m
-        memory: 128Mi
-      limits:
-        cpu: 1000m
-        memory: 4G
+    # resources:
+    #   requests:
+    #     cpu: 50m
+    #     memory: 128Mi
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 4G
     # Enable OTLP write receiver feature
     additionalArgs:
       - name: enable-feature
@@ -45,12 +45,12 @@ kubeStateMetrics:
   enabled: false
 
 # Prometheus Operator
-prometheusOperator:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
+# prometheusOperator:
+#   resources:
+#     requests:
+#       cpu: 50m
+#       memory: 64Mi
+#     limits:
+#       cpu: 200m
+#       memory: 256Mi
 
