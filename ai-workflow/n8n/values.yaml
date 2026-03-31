@@ -13,8 +13,8 @@ main:
     DB_POSTGRESDB_PASSWORD: "admin-db-123"
     WEBHOOK_URL: "https://n8n.dev.dawet.internal"
     N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "false"
-    N8N_SECURE_COOKIES: "false"
-  
+    N8N_SECURE_COOKIE: "false"
+
   persistence:
     enabled: true
     storageClass: local-path
