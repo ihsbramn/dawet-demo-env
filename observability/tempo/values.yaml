@@ -12,6 +12,10 @@ tempo:
     storage:
       trace:
         backend: local
+    # 7-day trace retention
+    compactor:
+      compaction:
+        block_retention: 168h
 
 persistence:
   enabled: true

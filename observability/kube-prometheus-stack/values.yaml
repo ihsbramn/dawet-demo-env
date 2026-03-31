@@ -1,0 +1,56 @@
+# =============================================================================
+# Kube Prometheus Stack - Helm Values (Demo)
+# =============================================================================
+# Ultra-lightweight kube-prometheus-stack for 8GB RAM Mac
+# =============================================================================
+
+# Disable Grafana to keep it lightweight (use external or separate deployment)
+grafana:
+  enabled: false
+
+# Disable Alertmanager for demo simplicity
+alertmanager:
+  enabled: false
+
+# Prometheus configuration
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    # Enable OTLP write receiver feature
+    additionalArgs:
+      - name: enable-feature
+        value: otlp-write-receiver
+
+# Disable node exporter for minimal footprint
+nodeExporter:
+  enabled: false
+
+# kube-state-metrics - disable for demo
+kubeStateMetrics:
+  enabled: false
+
+# Prometheus Operator
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+

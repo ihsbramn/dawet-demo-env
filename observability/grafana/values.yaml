@@ -37,28 +37,33 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
+      # Prometheus — metrics (Alloy scrapes via remote_write, 7-day retention)
       - name: Prometheus
+        uid: prometheus
         type: prometheus
-        url: http://prometheus.observability.svc:9090
+        url: http://kube-prometheus-stack-prometheus.observability.svc:9090
         access: proxy
         isDefault: true
+      # Loki — logs (Alloy ships via loki.write, 7-day retention)
       - name: Loki
+        uid: loki
         type: loki
-        url: http://loki.observability.svc:3100
+        url: http://loki-gateway.observability.svc:3100
         access: proxy
+      # Tempo — traces (Alloy ships via OTLP, 7-day retention)
       - name: Tempo
+        uid: tempo
         type: tempo
         url: http://tempo.observability.svc:3200
         access: proxy
         jsonData:
           tracesToLogs:
-            datasourceUid: Loki
+            datasourceUid: loki
           serviceMap:
-            datasourceUid: Prometheus
+            datasourceUid: prometheus
           nodeGraph:
             enabled: true
 
-# ... rest remains unchanged or handled by sed
 ingress:
   enabled: false
 

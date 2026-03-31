@@ -1,7 +1,7 @@
 #  =============================================================================
 # Kube Prometheus Stack (Metrics) - Fleet Bundle (Demo)
 #  =============================================================================
-# Step 7: Full Kubernetes metrics stack using kube-prometheus-stack
+# Step 8: Full Kubernetes metrics stack using kube-prometheus-stack
 #  =============================================================================
 
 defaultNamespace: observability
@@ -9,7 +9,7 @@ defaultNamespace: observability
 helm:
   repo: https://prometheus-community.github.io/helm-charts/
   chart: kube-prometheus-stack
-  version: 68.4.4
+  version: 82.15.1
   releaseName: kube-prometheus-stack
   valuesFiles:
     - values.yaml
@@ -22,3 +22,4 @@ targetCustomizations:
 
 labels:
   bundle: kube-prometheus-stack
+

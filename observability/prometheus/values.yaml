@@ -1,10 +1,11 @@
 # =============================================================================
 # Kube Prometheus Stack - Helm Values (Demo)
 # =============================================================================
-# Ultra-lightweight kube-prometheus-stack for 8GB RAM Mac
+# Lightweight Prometheus-only backend for demo cluster (8GB RAM)
+# Alloy handles all scraping + PII masking, then remote_writes here
 # =============================================================================
 
-# Disable Grafana to keep it lightweight (use external or separate deployment)
+# Disable Grafana (separate bundle)
 grafana:
   enabled: false
 
@@ -12,39 +13,53 @@ grafana:
 alertmanager:
   enabled: false
 
-# Prometheus configuration
-prometheus:
-  prometheusSpec:
-    retention: 7d
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: hostpath
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 2Gi
-    resources:
-      requests:
-        cpu: 50m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-    # Enable OTLP write receiver feature
-    additionalArgs:
-      - name: enable-feature
-        value: otlp-write-receiver
-
-# Disable node exporter for minimal footprint
+# Disable node exporter (Alloy scrapes nodes)
 nodeExporter:
   enabled: false
 
-# kube-state-metrics - disable for demo
+# Disable kube-state-metrics (Alloy scrapes pods/nodes directly)
 kubeStateMetrics:
   enabled: false
 
-# Prometheus Operator
+# Prometheus configuration
+prometheus:
+  prometheusSpec:
+    # 7-day retention for monitoring demo window
+    retention: 7d
+    retentionSize: ""
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    # Enable remote_write receiver so Alloy can push metrics to Prometheus
+    additionalArgs:
+      - name: enable-feature
+        value: remote-write-receiver
+
+    # Don't scrape everything by default — Alloy is the collector
+    # Only pick up ServiceMonitors in the observability namespace
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+    ruleSelector: {}
+
+# Prometheus Operator - minimal footprint
 prometheusOperator:
   resources:
     requests:
@@ -53,4 +68,3 @@ prometheusOperator:
     limits:
       cpu: 200m
       memory: 256Mi
-

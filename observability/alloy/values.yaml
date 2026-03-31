@@ -45,15 +45,12 @@ alloy:
           target_label = "account_number"
           replacement = "MASKED"
         }
-        forward_to = [prometheus.remote_write.mimir.receiver]
+        forward_to = [prometheus.remote_write.prometheus.receiver]
       }
 
-      prometheus.remote_write "mimir" {
+      prometheus.remote_write "prometheus" {
         endpoint {
-          url = "http://mimir-gateway.observability.svc:8080/api/v1/push"
-          headers = {
-            "X-Scope-OrgID" = "dawet",
-          }
+          url = "http://kube-prometheus-stack-prometheus.observability.svc:9090/api/v1/write"
         }
       }
 

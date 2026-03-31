@@ -6,8 +6,19 @@
 
 loki:
   deploymentMode: SingleBinary
+  # auth_enabled: false — intentional for demo simplicity.
+  # Alloy sends tenant_id: dawet but Loki ignores it in single-tenant mode.
   auth_enabled: false
   useTestSchema: false
+
+  # 7-day log retention
+  limits_config:
+    retention_period: 168h
+
+  compactor:
+    retention_enabled: true
+    working_directory: /data/loki/compactor
+    shared_store: filesystem
   
   commonConfig:
     replication_factor: 1

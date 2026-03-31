@@ -15,7 +15,7 @@ dawet-demo-env/
 │   └── redis/                      # Cache
 ├── observability/
 │   ├── grafana/                    # Dashboards & Alerting
-│   ├── prometheus/                 # Metrics Backend (Replaced Mimir)
+│   ├── prometheus/                 # Metrics Backend (kube-prometheus-stack)
 │   ├── loki/                       # Logs
 │   ├── tempo/                      # Traces (Filesystem storage)
 │   └── alloy/                      # OpenTelemetry Collector
@@ -39,10 +39,10 @@ dawet-demo-env/
  4. weaviate             # Vector DB (Lightweight)
  5. n8n                  # Workflow automation
  6. dify                 # RAG & LLM Ops platform
- 7. prometheus           # Metrics backend
- 8. loki                 # Logs backend
- 9. tempo                # Traces backend
-10. alloy                # OTel collector (DaemonSet)
+ 7. prometheus           # Metrics backend (kube-prometheus-stack)
+ 8. loki                 # Logs backend (7-day retention)
+ 9. tempo                # Traces backend (7-day retention)
+10. alloy                # OTel collector — scrapes, PII-masks, remote_writes
 11. grafana              # Dashboards
 12. otel-demo            # Sample app
 ```
@@ -78,10 +78,10 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 | PostgreSQL | `bitnami/postgresql` | `postgres-system` | Single instance (Unified) |
 | Redis | `bitnami/redis` | `redis-system` | Standalone |
 | Grafana | `grafana/grafana` | `observability` | Single replica |
-| Prometheus | `prometheus-community/prometheus` | `observability` | Lightweight |
-| Loki | `grafana/loki` | `observability` | SingleBinary |
-| Tempo | `grafana/tempo` | `observability` | Local Filesystem |
-| Alloy | `grafana/alloy` | `observability` | DaemonSet |
+| Prometheus | `prometheus-community/kube-prometheus-stack` | `observability` | Remote-write receiver, 7d retention |
+| Loki | `grafana/loki` | `observability` | SingleBinary, 7d retention |
+| Tempo | `grafana/tempo` | `observability` | Local Filesystem, 7d retention |
+| Alloy | `grafana/alloy` | `observability` | DaemonSet, PII masking, remote_write |
 | Dify | `langgenius/dify` | `ai-workflow` | Minimal (Local Storage) |
 | Weaviate | `weaviate/weaviate` | `ai-workflow` | Standalone |
 | n8n | `n8nio/n8n` | `ai-workflow` | Single replica |
