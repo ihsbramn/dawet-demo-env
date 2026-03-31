@@ -25,7 +25,7 @@ api:
     enabled: true
     mountPath: "/app/api/storage"
     persistentVolumeClaim:
-      storageClass: hostpath
+      storageClass: local-path
       accessModes: "ReadWriteOnce"
       size: 5Gi
   
@@ -68,7 +68,7 @@ pluginDaemon:
     enabled: true
     mountPath: "/app/storage"
     persistentVolumeClaim:
-      storageClass: hostpath
+      storageClass: local-path
       accessModes: "ReadWriteOnce"
       size: 5Gi
 
@@ -83,10 +83,10 @@ postgresql:
   primary:
     persistence:
       enabled: true
-      storageClass: hostpath
+      storageClass: local-path
       size: 2Gi
   global:
-    storageClass: hostpath
+    storageClass: local-path
   auth:
     database: "dify_db"
     username: "admin"
@@ -100,16 +100,16 @@ redis:
   master:
     persistence:
       enabled: true
-      storageClass: hostpath
+      storageClass: local-path
       size: 2Gi
   global:
-    storageClass: hostpath
+    storageClass: local-path
 
 weaviate:
   enabled: true
   fullnameOverride: "dify-weaviate-v5"
   storage:
-    storageClassName: hostpath
+    storageClassName: local-path
     size: 2Gi
 
 ssrfProxy:

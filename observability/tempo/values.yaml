@@ -15,7 +15,7 @@ tempo:
 
 persistence:
   enabled: true
-  storageClass: hostpath
+  storageClass: local-path
   size: 2Gi
 
 resources:
