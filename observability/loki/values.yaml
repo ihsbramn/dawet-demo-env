@@ -18,6 +18,7 @@ loki:
   compactor:
     retention_enabled: true
     working_directory: /data/loki/compactor
+    delete_request_store: filesystem
   
   commonConfig:
     replication_factor: 1
