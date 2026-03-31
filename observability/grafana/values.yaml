@@ -58,13 +58,13 @@ datasources:
       - name: Loki
         uid: loki
         type: loki
-        url: http://loki-gateway.observability:3100/
+        url: http://loki-gateway.observability:80/
         access: proxy
       # Tempo — traces (Alloy ships via OTLP, 7-day retention)
       - name: Tempo
         uid: tempo
         type: tempo
-        url: http://tempo.observability:3200/
+        url: http://tempo.observability:3100/
         access: proxy
         jsonData:
           tracesToLogs:
