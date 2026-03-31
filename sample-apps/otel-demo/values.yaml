@@ -17,11 +17,6 @@ default:
       value: alloy.observability
     - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
       value: cumulative
-  
-  # Forward-compatible keys for OTel Demo Chart v0.100+
-  otlpCollectorEndpoint: http://alloy.observability:4317
-  otlpCollectorProtocol: grpc
-
   image:
     repository: ghcr.io/open-telemetry/demo
     tag: ""
