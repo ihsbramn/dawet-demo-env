@@ -17,6 +17,16 @@ initChownData:
   image:
     repository: busybox
     tag: 1.37.0
+  securityContext:
+    runAsUser: 0
+    runAsNonRoot: false
+    allowPrivilegeEscalation: true
+
+# Grafana runs as uid 472 — fsGroup ensures the PV dir is group-writable
+securityContext:
+  runAsUser: 472
+  runAsGroup: 472
+  fsGroup: 472
 
 ## Database - PostgreSQL
 grafana.ini:
