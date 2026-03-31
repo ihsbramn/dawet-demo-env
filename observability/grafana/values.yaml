@@ -51,20 +51,20 @@ datasources:
       - name: Prometheus
         uid: prometheus
         type: prometheus
-        url: http://kube-prometheus-stack-prometheus.observability:9090
+        url: http://kube-prometheus-stack-prometheus.observability:9090/
         access: proxy
         isDefault: true
       # Loki — logs (Alloy ships via loki.write, 7-day retention)
       - name: Loki
         uid: loki
         type: loki
-        url: http://loki-gateway.observability:3100
+        url: http://loki-gateway.observability:3100/
         access: proxy
       # Tempo — traces (Alloy ships via OTLP, 7-day retention)
       - name: Tempo
         uid: tempo
         type: tempo
-        url: http://tempo.observability:3200
+        url: http://tempo.observability:3200/
         access: proxy
         jsonData:
           tracesToLogs:
