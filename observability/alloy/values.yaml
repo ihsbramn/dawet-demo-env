@@ -246,7 +246,7 @@ alloy:
 
       otelcol.exporter.otlp "tempo" {
         client {
-          endpoint = "tempo.observability:4318"
+          endpoint = "tempo.observability:4317"
           tls {
             insecure = true
           }
