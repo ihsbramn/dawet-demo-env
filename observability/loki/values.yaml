@@ -17,7 +17,7 @@ loki:
 
   compactor:
     retention_enabled: true
-    working_directory: /data/loki/compactor
+    working_directory: /var/loki/compactor
     delete_request_store: filesystem
   
   commonConfig:
@@ -28,12 +28,12 @@ loki:
     
   storage_config:
     filesystem:
-      directory: /data/loki/chunks
+      directory: /var/loki/chunks
     boltdb_shipper:
-      active_index_directory: /data/loki/index
-      cache_location: /data/loki/cache
+      active_index_directory: /var/loki/index
+      cache_location: /var/loki/cache
       resync_interval: 5s
-            
+
   schemaConfig:
     configs:
       - from: 2026-03-01
@@ -52,7 +52,7 @@ singleBinary:
       memory: 128Mi
     limits:
       cpu: 500m
-      memory: 256Mi
+      memory: 1Gi
   persistence:
     enabled: true
     storageClass: local-path
