@@ -283,7 +283,9 @@ components:
     useDefault:
       env: true
     service:
+      type: NodePort
       port: 8080
+      nodePort: 30801
     podAnnotations:
       resource.opentelemetry.io/service.namespace: otel-demo
       io.opentelemetry.discovery.metrics/enabled: 'true'
