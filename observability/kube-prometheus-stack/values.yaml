@@ -1,18 +1,100 @@
 # =============================================================================
 # Kube Prometheus Stack - Helm Values (Demo)
 # =============================================================================
-# Ultra-lightweight kube-prometheus-stack for 8GB RAM Mac
+# Grafana bundled here — gets default K8s dashboards out of the box
+# Alloy: remote_write receiver for metrics | Loki + Tempo as additional sources
 # =============================================================================
 
-# Disable Grafana to keep it lightweight (use external or separate deployment)
+# ── Grafana ──────────────────────────────────────────────────────────────────
 grafana:
-  enabled: false
+  enabled: true
+  replicas: 1
 
-# Disable Alertmanager for demo simplicity
+  adminUser: admin
+  adminPassword: admin-demo-123
+
+  # Grafana runs as uid 472 — root init container chowns the local-path volume
+  initChownData:
+    enabled: true
+    securityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+      allowPrivilegeEscalation: true
+
+  securityContext:
+    runAsUser: 472
+    runAsGroup: 472
+    fsGroup: 472
+  defaultDashboardsTimezone: Asia/Jakarta
+  persistence:
+    enabled: true
+    storageClassName: local-path
+    size: 2Gi
+
+  ## Grafana.ini — use PostgreSQL as the session/config database
+  grafana.ini:
+    database:
+      type: postgres
+      host: postgres-grafana-postgresql.postgres-system.svc:5432
+      name: grafana_db
+      user: admin
+      password: admin-db-123
+    unified_alerting:
+      enabled: true
+  assertNoLeakedSecrets: false
+
+  ## Datasources — Prometheus (default) + Loki + Tempo cross-linked
+  additionalDataSources:
+    # Loki — logs (Alloy ships via loki.write, 7-day retention)
+    - name: Loki
+      uid: loki
+      type: loki
+      url: http://loki-gateway.observability:80/
+      access: proxy
+      isDefault: false
+    # Tempo — traces (Alloy ships via OTLP, 7-day retention)
+    - name: Tempo
+      uid: tempo
+      type: tempo
+      url: http://tempo.observability:3200/
+      access: proxy
+      jsonData:
+        tracesToLogs:
+          datasourceUid: loki
+        serviceMap:
+          datasourceUid: prometheus
+        nodeGraph:
+          enabled: true
+
+  ## The built-in Prometheus datasource is auto-configured by kube-prometheus-stack
+  ## pointing to the in-cluster Prometheus service — no manual config needed.
+
+  service:
+    type: NodePort
+    nodePort: 30300
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+  ## Sidecar — picks up ConfigMap dashboards labelled grafana_dashboard
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+      label: grafana_dashboard
+    datasources:
+      enabled: true
+
+# ── Alertmanager ─────────────────────────────────────────────────────────────
 alertmanager:
   enabled: false
 
-# Prometheus configuration
+# ── Prometheus ───────────────────────────────────────────────────────────────
 prometheus:
   prometheusSpec:
     retention: 7d
@@ -23,34 +105,35 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 2Gi
-    # resources:
-    #   requests:
-    #     cpu: 50m
-    #     memory: 128Mi
-    #   limits:
-    #     cpu: 1000m
-    #     memory: 4G
-    # Enable OTLP write receiver feature
+              storage: 5Gi
+
+    # Enable remote_write receiver so Alloy can push metrics here
     additionalArgs:
       - name: enable-feature
-        value: otlp-write-receiver
+        value: remote-write-receiver
 
-# Disable node exporter for minimal footprint
+    # Alloy is the collector — don't also scrape everything internally
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+    ruleSelector: {}
+
+# ── Node Exporter / KSM ──────────────────────────────────────────────────────
+# Disabled: Alloy handles node + pod scraping with PII masking
 nodeExporter:
   enabled: false
 
-# kube-state-metrics - disable for demo
 kubeStateMetrics:
   enabled: false
 
-# Prometheus Operator
-# prometheusOperator:
-#   resources:
-#     requests:
-#       cpu: 50m
-#       memory: 64Mi
-#     limits:
-#       cpu: 200m
-#       memory: 256Mi
-
+# ── Prometheus Operator ───────────────────────────────────────────────────────
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi

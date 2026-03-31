@@ -14,8 +14,8 @@ dawet-demo-env/
 │   ├── postgres-cluster/           # PostgreSQL (Unified)
 │   └── redis/                      # Cache
 ├── observability/
-│   ├── grafana/                    # Dashboards & Alerting
-│   ├── prometheus/                 # Metrics Backend (kube-prometheus-stack)
+│   ├── grafana/                    # DISABLED — Grafana bundled in kube-prometheus-stack
+│   ├── kube-prometheus-stack/      # Metrics + Grafana (with default K8s dashboards)
 │   ├── loki/                       # Logs
 │   ├── tempo/                      # Traces (Filesystem storage)
 │   └── alloy/                      # OpenTelemetry Collector
@@ -33,18 +33,17 @@ dawet-demo-env/
 ## 🏗️ Deployment Order (Sequential)
 
 ```
- 1. namespaces           # Create all namespaces
- 2. postgres-cluster     # PostgreSQL databases
- 3. redis                # Cache & message queue
- 4. weaviate             # Vector DB (Lightweight)
- 5. n8n                  # Workflow automation
- 6. dify                 # RAG & LLM Ops platform
- 7. prometheus           # Metrics backend (kube-prometheus-stack)
- 8. loki                 # Logs backend (7-day retention)
- 9. tempo                # Traces backend (7-day retention)
-10. alloy                # OTel collector — scrapes, PII-masks, remote_writes
-11. grafana              # Dashboards
-12. otel-demo            # Sample app
+ 1. namespaces              # Create all namespaces
+ 2. postgres-cluster        # PostgreSQL databases
+ 3. redis                   # Cache & message queue
+ 4. weaviate                # Vector DB (Lightweight)
+ 5. n8n                     # Workflow automation
+ 6. dify                    # RAG & LLM Ops platform
+ 7. kube-prometheus-stack   # Metrics + Grafana (default K8s dashboards bundled)
+ 8. loki                    # Logs backend (7-day retention)
+ 9. tempo                   # Traces backend (7-day retention)
+10. alloy                   # OTel collector — scrapes, PII-masks, remote_writes
+11. otel-demo               # Sample app
 ```
 
 Each step waits for the previous one to become **Active** before starting.
@@ -77,7 +76,7 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 | **Storage Class** | built-in | kube-system | **hostpath** |
 | PostgreSQL | `bitnami/postgresql` | `postgres-system` | Single instance (Unified) |
 | Redis | `bitnami/redis` | `redis-system` | Standalone |
-| Grafana | `grafana/grafana` | `observability` | Single replica |
+| Grafana | `prometheus-community/kube-prometheus-stack` | `observability` | Bundled in kube-prometheus-stack, default K8s dashboards |
 | Prometheus | `prometheus-community/kube-prometheus-stack` | `observability` | Remote-write receiver, 7d retention |
 | Loki | `grafana/loki` | `observability` | SingleBinary, 7d retention |
 | Tempo | `grafana/tempo` | `observability` | Local Filesystem, 7d retention |
