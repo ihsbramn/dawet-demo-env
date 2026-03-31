@@ -7,9 +7,9 @@
 defaultNamespace: sample-apps
 
 helm:
- repo: https://open-telemetry.github.io/opentelemetry-helm-charts/
+ repo: https://open-telemetry.github.io/opentelemetry-helm-charts
  chart: opentelemetry-demo
- version: 0.105.0
+ version: 0.40.6
  releaseName: otel-demo
  valuesFiles:
    - values.yaml
