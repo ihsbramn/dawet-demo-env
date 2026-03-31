@@ -30,8 +30,6 @@ securityContext:
 
 ## Database - PostgreSQL
 grafana.ini:
-  server:
-    root_url: "https://grafana.dev.dawet.internal"
   database:
     type: postgres
     host: postgres-grafana-postgresql.postgres-system.svc:5432
