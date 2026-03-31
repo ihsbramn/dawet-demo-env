@@ -3,9 +3,9 @@
 # =============================================================================
 # Ultra-lightweight: Single Binary mode (8GB RAM optimization)
 # =============================================================================
+deploymentMode: SingleBinary
 
 loki:
-  deploymentMode: SingleBinary
   # auth_enabled: false — intentional for demo simplicity.
   # Alloy sends tenant_id: dawet but Loki ignores it in single-tenant mode.
   auth_enabled: false
@@ -37,7 +37,7 @@ loki:
       
   schemaConfig:
     configs:
-      - from: 2024-01-01
+      - from: 2026-03-01
         store: tsdb
         object_store: filesystem
         schema: v13
