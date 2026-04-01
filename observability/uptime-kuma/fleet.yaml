@@ -12,11 +12,6 @@ helm:
   valuesFiles:
     - values.yaml
 
-dependsOn:
-  - selector:
-      matchLabels:
-        bundle: uptime-kuma-db
-
 targetCustomizations:
   - name: dev
     clusterSelector:
