@@ -19,7 +19,7 @@ ingress:
 
 # External MySQL database configuration
 externalDatabase:
-  type: "mysql"
+  type: "mariadb"
   enabled: true
   hostname: "uptime-kuma-db-mysql.observability.svc"
   port: 3306
