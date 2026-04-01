@@ -19,21 +19,12 @@ ingress:
 
 # External MariaDB database configuration
 externalDatabase:
-  type: "mariadb"
-  enabled: true
-  hostname: "uptime-kuma-db-mariadb.observability.svc"
-  port: 3306
-  database: uptime_kuma
-  username: uptime_kuma
-  password: "kuma-db-123"
-  existingSecret: ""
-  existingSecretPasswordKey: "password"
-  existingSecretUsernameKey: "username"
+  enabled: false
 
 volume:
   enabled: true
   accessMode: ReadWriteOnce
-  size: 2Gi
+  size: 5Gi
   storageClassName: "local-path"
 
 resources:
