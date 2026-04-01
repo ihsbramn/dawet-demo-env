@@ -7,9 +7,7 @@
 defaultNamespace: observability
 
 helm:
-  repo: https://helm.wso2.com
-  chart: mysql
-  version: 1.6.9
+  chart: mariadb-25.0.6.tgz
   releaseName: uptime-kuma-db
   valuesFiles:
     - values.yaml
