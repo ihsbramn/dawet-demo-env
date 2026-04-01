@@ -122,6 +122,8 @@ prometheus:
     serviceMonitorSelector: {}
     podMonitorSelector: {}
     ruleSelector: {}
+    service:
+      type: NodePort
 
 # ── Node Exporter / KSM ──────────────────────────────────────────────────────
 # Disabled: Alloy handles node + pod scraping with PII masking
