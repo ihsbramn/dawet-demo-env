@@ -1,0 +1,4 @@
+defaultNamespace: sample-apps
+
+labels:
+  bundle: deepseek-config
