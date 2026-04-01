@@ -1,15 +1,15 @@
 # =============================================================================
 # Uptime Kuma DB - Fleet Bundle (Demo)
 # =============================================================================
-# Dedicated MariaDB for Uptime Kuma
+# Dedicated MySQL for Uptime Kuma
 # =============================================================================
 
 defaultNamespace: observability
 
 helm:
-  repo: https://charts.bitnami.com/bitnami/
-  chart: mariadb
-  version: 25.0.6
+  repo: https://helm.wso2.com
+  chart: mysql
+  version: 1.6.9
   releaseName: uptime-kuma-db
   valuesFiles:
     - values.yaml

@@ -17,11 +17,11 @@ service:
 ingress:
   enabled: false
 
-# External MariaDB database configuration
+# External MySQL database configuration
 externalDatabase:
-  type: "mariadb"
+  type: "mysql"
   enabled: true
-  hostname: "uptime-kuma-db-mariadb.observability.svc"
+  hostname: "uptime-kuma-db-mysql.observability.svc"
   port: 3306
   database: uptime_kuma
   username: uptime_kuma
