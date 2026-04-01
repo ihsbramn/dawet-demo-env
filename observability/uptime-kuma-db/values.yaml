@@ -1,26 +1,26 @@
 # =============================================================================
 # Uptime Kuma DB - Helm Values (Demo)
 # =============================================================================
-# Lightweight WSO2 MySQL instance for Uptime Kuma only
+# Lightweight MariaDB instance for Uptime Kuma only
 # =============================================================================
-imagePullPolicy: IfNotPresent
-mysqlRootPassword: mysql-admin-123
-mysqlDatabase: uptime_kuma
-mysqlUser: uptime_kuma
-mysqlPassword: kuma-db-123
+auth:
+  rootPassword: mariadb-admin-123
+  database: uptime_kuma
+  username: uptime_kuma
+  password: kuma-db-123
 
-persistence:
-  enabled: true
-  storageClass: local-path
-  size: 2Gi
-
-resources:
-  requests:
-    cpu: 50m
-    memory: 500Mi
-  limits:
-    cpu: 500m
-    memory: 1Gi
+primary:
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 500Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
 
 metrics:
   enabled: false

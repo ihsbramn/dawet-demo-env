@@ -17,11 +17,11 @@ service:
 ingress:
   enabled: false
 
-# External MySQL database configuration
+# External MariaDB database configuration
 externalDatabase:
   type: "mariadb"
   enabled: true
-  hostname: "uptime-kuma-db-mysql.observability.svc"
+  hostname: "uptime-kuma-db-mariadb.observability.svc"
   port: 3306
   database: uptime_kuma
   username: uptime_kuma
@@ -39,10 +39,10 @@ volume:
 resources:
   requests:
     cpu: 50m
-    memory: 64Mi
+    memory: 500Mi
   limits:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 50m
+    memory: 1Gi
 
 networkPolicy:
   enabled: false
