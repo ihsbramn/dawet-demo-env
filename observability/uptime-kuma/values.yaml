@@ -21,6 +21,9 @@ ingress:
 externalDatabase:
   enabled: false
 
+serviceMonitor:
+  enabled: true
+
 volume:
   enabled: true
   accessMode: ReadWriteOnce
