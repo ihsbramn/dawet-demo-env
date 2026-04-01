@@ -13,6 +13,7 @@ grafana:
   adminUser: admin
   adminPassword: admin-demo-123
 
+  forceDeployDashboards: true
   # Grafana runs as uid 472 — root init container chowns the local-path volume
   initChownData:
     enabled: false
@@ -125,13 +126,15 @@ prometheus:
 # ── Node Exporter / KSM ──────────────────────────────────────────────────────
 # Disabled: Alloy handles node + pod scraping with PII masking
 nodeExporter:
-  enabled: false
+  enabled: true
+  forceDeployDashboards: true 
 
 kubeStateMetrics:
-  enabled: false
+  enabled: true
 
 # ── Prometheus Operator ───────────────────────────────────────────────────────
 prometheusOperator:
+  enabled: true
   resources:
     requests:
       cpu: 50m
@@ -139,3 +142,28 @@ prometheusOperator:
     limits:
       cpu: 200m
       memory: 256Mi
+
+
+kubeApiServer:
+  enabled: true
+
+kubelet:
+  enabled: true
+
+kubeControllerManager:
+  enabled: true
+
+coreDns:
+  enabled: true
+
+kubeDns:
+  enabled: true
+
+kubeEtcd:
+  enabled: true
+
+kubeScheduler:
+  enabled: true
+
+kubeProxy:
+  enabled: true
