@@ -1,0 +1,29 @@
+# =============================================================================
+# Uptime Kuma DB - Fleet Bundle (Demo)
+# =============================================================================
+# Dedicated MariaDB for Uptime Kuma
+# =============================================================================
+
+defaultNamespace: observability
+
+helm:
+  repo: https://charts.bitnami.com/bitnami/
+  chart: mariadb
+  version: 19.0.3
+  releaseName: uptime-kuma-db
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: namespaces
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+labels:
+  bundle: uptime-kuma-db

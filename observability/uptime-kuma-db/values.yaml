@@ -1,0 +1,29 @@
+# =============================================================================
+# Uptime Kuma DB - Helm Values (Demo)
+# =============================================================================
+# Lightweight MariaDB instance for Uptime Kuma only
+# =============================================================================
+auth:
+  rootPassword: mariadb-admin-123
+  database: uptime_kuma
+  username: uptime_kuma
+  password: kuma-db-123
+
+primary:
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 128Mi
+
+secondary:
+  replicaCount: 0
+
+metrics:
+  enabled: false

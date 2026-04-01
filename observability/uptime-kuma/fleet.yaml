@@ -1,0 +1,27 @@
+# =============================================================================
+# Uptime Kuma - Fleet Bundle (Demo)
+# =============================================================================
+
+defaultNamespace: observability
+
+helm:
+  repo: https://helm.irsigler.cloud
+  chart: uptime-kuma
+  version: 4.0.0
+  releaseName: uptime-kuma
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        bundle: uptime-kuma-db
+
+targetCustomizations:
+  - name: dev
+    clusterSelector:
+      matchLabels:
+        env: dev
+
+labels:
+  bundle: uptime-kuma

@@ -1,0 +1,48 @@
+# =============================================================================
+# Uptime Kuma - Helm Values (Demo)
+# =============================================================================
+# Connected to dedicated MariaDB, using NodePort for UI
+# =============================================================================
+
+image:
+  repository: louislam/uptime-kuma
+  pullPolicy: IfNotPresent
+  tag: "2.1.1"
+
+service:
+  type: NodePort
+  port: 3001
+  nodePort: 30400
+
+ingress:
+  enabled: false
+
+# External MariaDB database configuration
+externalDatabase:
+  type: "mariadb"
+  enabled: true
+  hostname: "uptime-kuma-db-mariadb.observability.svc"
+  port: 3306
+  database: uptime_kuma
+  username: uptime_kuma
+  password: "kuma-db-123"
+  existingSecret: ""
+  existingSecretPasswordKey: "password"
+  existingSecretUsernameKey: "username"
+
+volume:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  storageClassName: "local-path"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+networkPolicy:
+  enabled: false
