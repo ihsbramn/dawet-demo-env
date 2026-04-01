@@ -7,7 +7,7 @@
 defaultNamespace: observability
 
 helm:
-  chart: mariadb-25.0.6.tgz
+  chart: ./mariadb-25.0.6.tgz
   releaseName: uptime-kuma-db
   valuesFiles:
     - values.yaml
