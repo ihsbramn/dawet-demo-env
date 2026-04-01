@@ -9,7 +9,7 @@ defaultNamespace: observability
 helm:
   repo: https://charts.bitnami.com/bitnami/
   chart: mariadb
-  version: 19.0.3
+  version: 25.0.6
   releaseName: uptime-kuma-db
   valuesFiles:
     - values.yaml
