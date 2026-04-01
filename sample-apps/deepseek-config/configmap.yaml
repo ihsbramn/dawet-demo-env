@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: deepseek-tokens
-  namespace: sample-apps
-data:
-  token1: "sk-50ec0dd900394ea4b3c4a4312476b555"
-  token2: "sk-2a3115801c4a4ac18f5c13eb1b636a8d"

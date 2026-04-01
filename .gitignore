@@ -12,3 +12,6 @@
 *-secret.yaml
 *-sealed-secret.yaml
 !*-secret.yaml.example
+
+# Local LLM Configs
+sample-apps/deepseek-config/
