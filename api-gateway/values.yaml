@@ -200,6 +200,10 @@ mongodb:
     requests:
       cpu: 100m
       memory: 256Mi
+  volumePermissions:
+    enabled: true
+    image:
+      repository: bitnamilegacy/os-shell
   persistence:
     enabled: true
     accessModes:
