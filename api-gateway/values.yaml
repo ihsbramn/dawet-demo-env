@@ -424,22 +424,28 @@ api:
   autoscaling:
     enabled: false
   ingress:
+    # --- Management REST API: nodeIP:30080/gravitee/management ---
     management:
-      enabled: false
-      scheme: https
-      pathType: Prefix
-      path: /management
-      ingressClassName: ""
-      hosts:
-        - apim.example.com
+      enabled: true
+      scheme: http
+      pathType: ImplementationSpecific
+      path: /gravitee/management(/|$)(.*)
+      ingressClassName: nginx
+      hosts: []
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /management/$2
+        nginx.ingress.kubernetes.io/use-regex: "true"
+    # --- Portal REST API: nodeIP:30080/gravitee/portal-api ---
     portal:
-      enabled: false
-      scheme: https
-      pathType: Prefix
-      path: /portal
-      ingressClassName: ""
-      hosts:
-        - apim.example.com
+      enabled: true
+      scheme: http
+      pathType: ImplementationSpecific
+      path: /gravitee/portal-api(/|$)(.*)
+      ingressClassName: nginx
+      hosts: []
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /portal/$2
+        nginx.ingress.kubernetes.io/use-regex: "true"
     automation:
       enabled: false
     gamma:
@@ -567,12 +573,15 @@ gateway:
   autoscaling:
     enabled: false
   ingress:
-    enabled: false
-    pathType: Prefix
-    path: /
-    ingressClassName: ""
-    hosts:
-      - apim.example.com
+    # --- Gateway: nodeIP:30080/gravitee/gateway ---
+    enabled: true
+    pathType: ImplementationSpecific
+    path: /gravitee/gateway(/|$)(.*)
+    ingressClassName: nginx
+    hosts: []
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     limits:
       cpu: 500m
@@ -617,12 +626,15 @@ portal:
     internalPortName: http
     nodePort: 30803
   ingress:
-    enabled: false
-    pathType: Prefix
-    path: /
-    ingressClassName: ""
-    hosts:
-      - apim.example.com
+    # --- Developer Portal UI: nodeIP:30080/gravitee/portal-ui ---
+    enabled: true
+    pathType: ImplementationSpecific
+    path: /gravitee/portal(/|$)(.*)
+    ingressClassName: nginx
+    hosts: []
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     limits:
       cpu: 100m
@@ -668,12 +680,15 @@ ui:
     internalPortName: http
     nodePort: 30802
   ingress:
-    enabled: false
+    # --- Management Console UI: nodeIP:30080/gravitee/console ---
+    enabled: true
     pathType: ImplementationSpecific
-    path: /console(/.*)?
-    ingressClassName: ""
-    hosts:
-      - apim.example.com
+    path: /gravitee/console(/|$)(.*)
+    ingressClassName: nginx
+    hosts: []
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     limits:
       cpu: 100m

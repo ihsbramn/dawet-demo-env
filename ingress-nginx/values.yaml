@@ -1,0 +1,46 @@
+## ingress-nginx values.yaml
+## NodePort deployment for local/demo environment.
+## Access: http://<nodeIP>:30080/<path>
+
+controller:
+  ingressClass: nginx
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+
+  # Single replica for demo / resource-constrained environment
+  replicaCount: 1
+
+  # Expose via NodePort so no LoadBalancer is required
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+    externalTrafficPolicy: Cluster
+
+  # Allow snippet annotations (needed for Gravitee path rewrites)
+  allowSnippetAnnotations: true
+
+  config:
+    # Strip the /gravitee prefix before proxying to Gravitee services
+    use-forwarded-headers: "true"
+    proxy-body-size: "0"
+    proxy-read-timeout: "600"
+    proxy-send-timeout: "600"
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 90Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  admissionWebhooks:
+    enabled: false
+
+# Disable default backend to save resources
+defaultBackend:
+  enabled: false
