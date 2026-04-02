@@ -149,13 +149,12 @@ mongo:
     password:
 
 jdbc:
-  url: jdbc:mysql://gravitee-mysql:3306/gravitee
+  url: "jdbc:mysql://gravitee-mysql:3306/gravitee?useSSL=false&allowPublicKeyRetrieval=true"
   driver: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.22/mysql-connector-java-8.0.22.jar
   username: gravitee
   password: gravitee_password
   enabled: true
   liquibase: true
-  schema: public
   pool:
     autoCommit:  true
     connectionTimeout: 10000
