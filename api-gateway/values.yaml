@@ -201,9 +201,16 @@ mongodb:
       cpu: 100m
       memory: 256Mi
   volumePermissions:
-    enabled: true
-    image:
-      repository: bitnamilegacy/os-shell
+    # Disabled: local-path provisioner creates root-owned dirs; the chown init
+    # container is not needed and the conf.default copy fails under it.
+    enabled: false
+  # local-path storage does not support fsGroup chown by kubelet; disable
+  # the restrictive security context so MongoDB can start without the
+  # "cp: cannot open /opt/bitnami/mongodb/conf.default/mongodb.conf" error.
+  podSecurityContext:
+    enabled: false
+  containerSecurityContext:
+    enabled: false
   persistence:
     enabled: true
     accessModes:
