@@ -216,6 +216,13 @@ mongodb:
     accessModes:
       - ReadWriteOnce
     size: 1Gi
+  # Arbiter also has its own separate security context settings —
+  # must be disabled for local-path storage as well.
+  arbiter:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
 
 es:
   enabled: true
