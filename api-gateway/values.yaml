@@ -92,9 +92,9 @@ jwtSecret: myJWT4Gr4v1t33_S3cr3t
 adminAccountEnable: true
 # Default password "admin", use bcrypt ($2a$ version) to generate a new one
 adminPasswordBcrypt: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
-adminEmail:
-adminFirstName:
-adminLastName:
+adminEmail: "training@admin.com"
+adminFirstName: "admin"
+adminLastName: "admin"
 
 extraInMemoryUsers: |
   - user:
@@ -123,17 +123,11 @@ oidcAuth:
   enabled: false
 
 smtp:
-  enabled: true
+  enabled: false
 
 notifiers:
   smtp:
-    enabled: true
-    host: ${email.host}
-    subject: ${email.subject}
-    port: ${email.port}
-    from: ${email.from}
-    username: ${email.username}
-    password: ${email.password}
+    enabled: false
 
 mongo:
   sslEnabled: false
