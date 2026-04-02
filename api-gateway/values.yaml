@@ -167,6 +167,8 @@ jdbc:
 
 mysql:
   enabled: true
+  image:
+    repository: bitnamilegacy/mysql
   fullnameOverride: "gravitee-mysql"
   auth:
     database: gravitee
