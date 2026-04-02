@@ -1,0 +1,18 @@
+annotations:
+  artifacthub.io/changes: ""
+apiVersion: v1
+appVersion: 4.10.9
+description: Official Gravitee.io Helm chart for API Management
+home: https://gravitee.io
+icon: https://avatars2.githubusercontent.com/u/12655666?s=200&v=4
+keywords:
+- gravitee.io
+- gravitee
+- graviteeio
+- API
+- API Management
+kubeVersion: '>=1.14.0-0'
+name: apim3
+sources:
+- https://github.com/gravitee-io
+version: 4.10.9

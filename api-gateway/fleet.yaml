@@ -1,0 +1,9 @@
+defaultNamespace: api-gateway
+helm:
+  releaseName: gravitee
+  chart: ./gravitee
+  valuesFiles:
+    - values.yaml
+labels:
+  app: gravitee
+  component: api-gateway

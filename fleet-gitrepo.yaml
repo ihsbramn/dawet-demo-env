@@ -11,4 +11,5 @@ spec:
     - observability
     - ai-workflow/dify
     - ai-workflow/n8n
+    - api-gateway
     - sample-apps

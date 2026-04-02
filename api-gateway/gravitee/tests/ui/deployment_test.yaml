@@ -1,0 +1,266 @@
+suite: Test ui deployment
+templates:
+  - "ui/ui-deployment.yaml"
+  - "ui/ui-configmap.yaml"
+tests:
+  - it: Should set template labels
+    template: ui/ui-deployment.yaml
+    chart:
+      version: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.metadata.labels['helm.sh/chart']
+          value: apim-test
+
+  - it: Should generate a CONSOLE_BASE_HREF environment variable
+    template: ui/ui-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "CONSOLE_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/console/"
+
+  - it: Should generate a CONSOLE_BASE_HREF environment variable when modifying ingress path
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        ingress:
+          path: /
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "CONSOLE_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/"
+
+  - it: Should generate a CONSOLE_BASE_HREF environment variable when modifying ingress path with subpath
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        ingress:
+          path: /4pi-test/console(/.*)?
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "CONSOLE_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/4pi-test/console/"
+
+  - it: Should generate a CONSOLE_BASE_HREF environment variable and add "/" when modifying ingress path
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        ingress:
+          path: /test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "CONSOLE_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/test/"
+
+  - it: Should override generated CONSOLE_BASE_HREF environment variable
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        env:
+          - name: CONSOLE_BASE_HREF
+            value: /test/
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "CONSOLE_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/test/"
+
+  - it: Should have default resources
+    template: ui/ui-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "100m"
+
+  - it: Check DB Less mode
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: Deploy with podSecurityContext
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        deployment:
+          podSecurityContext:
+            fsGroup: 1001
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1001
+
+  - it: Generate the default preStop
+    template: ui/ui-deployment.yaml
+    set:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command
+          value: ['sh','-c', 'sleep 5 && /usr/sbin/nginx -s quit']
+
+
+  - it: Override the default preStop
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        lifecycle:
+          preStop: "['sh','-c', 'sleep 5 && /usr/sbin/nginx -s override']"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command
+          value: ['sh','-c', 'sleep 5 && /usr/sbin/nginx -s override']
+
+  - it: Default SecurityContext
+    template: ui/ui-deployment.yaml
+    set:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: Override SecurityContext
+    template: ui/ui-deployment.yaml
+    set:
+      ui:
+        deployment:
+          securityContext:
+            runAsUser: 102
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 102
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: Deploy with managed ServiceAccount
+    template: ui/ui-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: ""
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "RELEASE-NAME-apim"
+
+  - it: Deploy with custom ServiceAccount
+    template: ui/ui-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy without ServiceAccount
+    template: ui/ui-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - isEmpty:
+          path: spec.template.spec.serviceAccountName
+
+  - it: Deploy with custom managed ServiceAccount
+    template: ui/ui-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy with component specific ServiceAccount
+    template: ui/ui-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+      ui:
+        deployment:
+          serviceAccount: "apim-ui"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "apim-ui"

@@ -1,0 +1,149 @@
+suite: Test Management API default configmap with MongoDB
+templates:
+  - "gateway/gateway-configmap.yaml"
+tests:
+  - it: Set common value and uri
+    template: gateway/gateway-configmap.yaml
+    set:
+      mongo:
+        sslEnabled: true
+        socketKeepAlive: true
+        uri: mongodb://mongo-mongodb-replicaset:27017/gravitee
+        auth:
+          enabled: true
+          username: username
+          password: password
+          authSource: authSource
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            management:
+              type: mongodb
+              mongodb:
+                sslEnabled: true
+                socketKeepAlive: true
+                uri: mongodb://mongo-mongodb-replicaset:27017/gravitee
+  - it: Set common value and servers
+    template: gateway/gateway-configmap.yaml
+    set:
+      mongo:
+        sslEnabled: true
+        socketKeepAlive: true
+        servers: |
+          - host: mongo1
+            port: 27017
+          - host: mongo2
+            port: 27017
+        dbname: dbname
+        auth:
+          enabled: true
+          username: username
+          password: password
+          source: authSource
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            management:
+              type: mongodb
+              mongodb:
+                sslEnabled: true
+                socketKeepAlive: true
+                servers:
+                  - host: mongo1
+                    port: 27017
+                  - host: mongo2
+                    port: 27017
+            (.|\n)*
+                dbname: dbname
+                username: username
+                password: password
+                authSource: authSource
+  - it: Set common value and properties one by one
+    template: gateway/gateway-configmap.yaml
+    set:
+      mongo:
+        sslEnabled: true
+        socketKeepAlive: true
+        rsEnabled: true
+        dbhost: graviteeio-apim-mongodb-replicaset
+        dbname: dbname
+        dbport: 27117
+        connectTimeoutMS: 2000
+        auth:
+          enabled: true
+          username: username
+          password: password
+          source: authSource
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            management:
+              type: mongodb
+              mongodb:
+                sslEnabled: true
+                socketKeepAlive: true
+                uri: mongodb://username:password@graviteeio-apim-mongodb-replicaset:27117/dbname\?&replicaSet=rs0&authSource=authSource&connectTimeoutMS=2000
+  - it: Set mongo keystore attributes with provided values
+    template: gateway/gateway-configmap.yaml
+    set:
+      mongo:
+        keystore:
+          path: '/path/to/keystore.p12'
+          type: 'pkcs12'
+          password: 'keystorePassword'
+          keyPassword: 'keyPassword'
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            management:
+              type: mongodb
+              mongodb:
+              (.|\n)*
+                keystore:
+                  keyPassword: keyPassword
+                  password: keystorePassword
+                  path: /path/to/keystore.p12
+                  type: pkcs12
+            (.|\n)*
+            ratelimit:
+              type: mongodb
+              mongodb:
+              (.|\n)*
+                keystore:
+                  keyPassword: keyPassword
+                  password: keystorePassword
+                  path: /path/to/keystore.p12
+                  type: pkcs12
+  - it: Set mongo truststore attributes with provided values
+    template: gateway/gateway-configmap.yaml
+    set:
+      mongo:
+        truststore:
+          path: '/path/to/truststore.jks'
+          type: 'jks'
+          password: 'truststorePassword'
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            management:
+              type: mongodb
+              mongodb:
+              (.|\n)*
+                truststore:
+                  password: truststorePassword
+                  path: /path/to/truststore.jks
+                  type: jks
+            (.|\n)*
+            ratelimit:
+              type: mongodb
+              mongodb:
+              (.|\n)*
+                truststore:
+                  password: truststorePassword
+                  path: /path/to/truststore.jks
+                  type: jks

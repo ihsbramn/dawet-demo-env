@@ -1,0 +1,30 @@
+suite: Test Management API with Gravitee Cloud
+templates:
+  - "api/api-deployment.yaml"
+  - "api/api-configmap.yaml"
+tests:
+  - it: Should mount gravitee-cloud-certificates volume
+    template: api/api-deployment.yaml
+    set:
+      cloud:
+        enabled: true
+        connector:
+          ws:
+            ssl:
+              keystore:
+                password: my_password
+                value: my_value
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - isAPIVersion:
+          of: apps/v1
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].name
+          value: gravitee-cloud-certificates
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].mountPath
+          value: /opt/graviteeio-management-api/cloud
+

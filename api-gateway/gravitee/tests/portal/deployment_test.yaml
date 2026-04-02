@@ -1,0 +1,268 @@
+suite: Test portal deployment
+templates:
+  - "portal/portal-deployment.yaml"
+  - "portal/portal-configmap.yaml"
+tests:
+  - it: Should set template labels
+    template: portal/portal-deployment.yaml
+    chart:
+      version: test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.metadata.labels['helm.sh/chart']
+          value: apim-test
+
+  - it: Should generate a PORTAL_BASE_HREF environment variable
+    template: portal/portal-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "PORTAL_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/"
+
+  - it: Should generate a CONSOLE_BASE_HREF environment variable when modifying ingress path with subpath
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        ingress:
+          path: /4pi-test/portal(/.*)?
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "PORTAL_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/4pi-test/portal/"
+
+  - it: Should generate a PORTAL_BASE_HREF environment variable when modifying ingress path
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        ingress:
+          path: /test
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: "PORTAL_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: "/test/"
+
+  - it: Should override generated PORTAL_BASE_HREF environment variable
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        env:
+        - name: PORTAL_BASE_HREF
+          value: /test/
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: "PORTAL_BASE_HREF"
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: "/test/"
+
+  - it: Check DB Less mode
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: Deploy with podSecurityContext
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        deployment:
+          podSecurityContext:
+            fsGroup: 1001
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1001
+
+  - it: Generate the default preStop
+    template: portal/portal-deployment.yaml
+    set:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command
+          value: ['sh','-c', 'sleep 5 && /usr/sbin/nginx -s quit']
+
+
+  - it: Override the default preStop
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        lifecycle:
+          preStop: "['sh','-c', 'sleep 5 && /usr/sbin/nginx -s override']"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command
+          value: ['sh','-c', 'sleep 5 && /usr/sbin/nginx -s override']
+
+  - it: Default SecurityContext
+    template: portal/portal-deployment.yaml
+    set:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: Override SecurityContext
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        deployment:
+          securityContext:
+            runAsUser: 102
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 102
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: Deploy with managed ServiceAccount
+    template: portal/portal-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: ""
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "RELEASE-NAME-apim"
+
+  - it: Deploy with custom ServiceAccount
+    template: portal/portal-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy without ServiceAccount
+    template: portal/portal-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - isEmpty:
+          path: spec.template.spec.serviceAccountName
+
+  - it: Deploy with custom managed ServiceAccount
+    template: portal/portal-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy with component specific ServiceAccount
+    template: portal/portal-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+      portal:
+        deployment:
+          serviceAccount: "apim-portal"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "apim-portal"
+
+  - it: Should set DEFAULT_PORTAL environment variable with classic value by default
+    template: portal/portal-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: "DEFAULT_PORTAL"
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: "classic"
+
+  - it: Should override DEFAULT_PORTAL environment variable value with next
+    template: portal/portal-deployment.yaml
+    set:
+      portal:
+        defaultPortal: "next"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env[2].name
+          value: "DEFAULT_PORTAL"
+      - equal:
+          path: spec.template.spec.containers[0].env[2].value
+          value: "next"

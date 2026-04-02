@@ -1,0 +1,86 @@
+suite: Test Management API configmap with tracining enabled
+templates:
+  - "gateway/gateway-configmap.yaml"
+tests:
+  - it: Enable opentelemetry tracing
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        services:
+          opentelemetry:
+            enabled: true
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            \s opentelemetry:
+            \s   enabled: true
+  - it: Enable opentelemetry tracing and set common values
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        services:
+          opentelemetry:
+            enabled: true
+            exporter:
+              endpoint: http://localhost:4317
+              type: grpc
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            \s opentelemetry:
+            \s   enabled: true
+            \s   exporter:
+            \s     endpoint: http://localhost:4317
+            \s     type: grpc
+  - it: Enable opentelemetry tracing and set ssl values
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        services:
+          opentelemetry:
+            enabled: true
+            exporter:
+              endpoint: http://localhost:4317
+              type: grpc
+              compression: none
+              headers:
+                authorization: my_auth_header
+              ssl:
+                enabled: true
+                ## following fields are only mandatory if ssl.enabled is true
+                trustall: true
+                verifyHostname: true
+                keystore:
+                  type: jks
+                  path: /keystore
+                  password: password-key
+                truststore:
+                  type: pem
+                  path: /truststore
+                  password: password-trust
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            \s opentelemetry:
+            \s   enabled: true
+            \s   exporter:
+            \s     compression: none
+            \s     endpoint: http://localhost:4317
+            \s     headers:
+            \s       authorization: my_auth_header
+            \s     ssl:
+            \s       enabled: true
+            \s       keystore:
+            \s         password: password-key
+            \s         path: /keystore
+            \s         type: jks
+            \s       trustall: true
+            \s       truststore:
+            \s         password: password-trust
+            \s         path: /truststore
+            \s         type: pem
+            \s       verifyHostname: true
+            \s     type: grpc

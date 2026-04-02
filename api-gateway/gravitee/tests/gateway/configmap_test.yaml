@@ -1,0 +1,77 @@
+suite: Test Gateway configmap with general purpose
+templates:
+  - "gateway/gateway-configmap.yaml"
+tests:
+  - it: add service core ssl password
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        services:
+          core:
+            http:
+              secured: true
+              ssl:
+                keystore:
+                  password: password
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            \s     ssl:
+            \s       keystore:
+            \s         type: PKCS12
+            \s         path: /p12/keystore
+            \s         password: password
+
+  - it: Check multi server support
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        servers:
+          - type: http
+            port: 8082
+          - type: http
+            port: 8083
+          - type: tcp
+            port: 9092
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: |
+            servers:
+              - type: http
+                port: 8082
+                host: 0.0.0.0
+              - type: http
+                port: 8083
+                host: 0.0.0.0
+              - type: tcp
+                port: 9092
+                host: 0.0.0.0
+
+  - it: add service heartbeat default values
+    template: gateway/gateway-configmap.yaml
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: " * heartbeat: \n
+                     *  delay: 5000\n
+                     *  enabled: true\n
+                     *  unit: MILLISECONDS\n"
+
+  - it: add service heartbeat default values
+    template: gateway/gateway-configmap.yaml
+    set:
+      gateway:
+        services:
+          heartbeat:
+            delay: 30
+            enabled: true
+            unit: SECONDS
+    asserts:
+      - matchRegex:
+          path: data["gravitee.yml"]
+          pattern: " * heartbeat: \n
+                     *  delay: 30\n
+                     *  enabled: true\n
+                     *  unit: SECONDS\n"

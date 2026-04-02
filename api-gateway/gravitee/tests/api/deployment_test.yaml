@@ -1,0 +1,336 @@
+suite: Test Management API default deployment
+templates:
+  - "api/api-deployment.yaml"
+  - "api/api-configmap.yaml"
+tests:
+  - it: Check default deployment
+    template: api/api-deployment.yaml
+    chart:
+      version: 1.0.0-chart
+      appVersion: 1.0.0-app
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - isAPIVersion:
+          of: apps/v1
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: graviteeio/apim-management-api:1.0.0-app-debian
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: portal.entrypoint
+              value: https://apim.example.com/
+      - equal:
+          path: spec.template.metadata.labels['helm.sh/chart']
+          value: apim-1.0.0-chart
+
+  - it: Check deployment with revisionHistoryLimit
+    template: api/api-deployment.yaml
+    set:
+      api:
+        deployment:
+          revisionHistoryLimit: 5
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - isAPIVersion:
+          of: apps/v1
+      - equal:
+          path: spec.revisionHistoryLimit
+          value: 5
+
+  - it: Check deployment with JDBC support
+    template: api/api-deployment.yaml
+    set:
+      management:
+        type: "jdbc"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].name
+          value: graviteeio-apim-repository-jdbc-ext
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].mountPath
+          value: /opt/graviteeio-management-api/plugins/ext/repository-jdbc
+
+  - it: Set containerPort with custom port if core service is enabled
+    template: api/api-deployment.yaml
+    set:
+      api:
+        http:
+          services:
+            core:
+              http:
+                enabled: true
+                port: 20202
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value:
+            - name: http
+              containerPort: 8083
+            - name: api-techapi
+              containerPort: 20202
+      - matchRegex:
+          path: spec.template.spec.containers[0].ports[1].name
+          # There is a k8s limitation that port names must be 15 characters or less
+          pattern: ^.{0,15}$
+
+  - it: Set containerPort for Integration Controller when enabled
+    template: api/api-deployment.yaml
+    set:
+      api:
+        integration:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value:
+            - name: http
+              containerPort: 8083
+            - name: api-techapi
+              containerPort: 18083
+      - matchRegex:
+          path: spec.template.spec.containers[0].ports[1].name
+          # There is a k8s limitation that port names must be 15 characters or less
+          pattern: ^.{0,15}$
+
+
+  - it: Deploy with managed ServiceAccount
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: ""
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "RELEASE-NAME-apim"
+
+  - it: Deploy with custom ServiceAccount
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy without ServiceAccount
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: false
+        serviceAccount:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: null
+
+  - it: Deploy with custom managed ServiceAccount
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "test-sa"
+
+  - it: Deploy with component specific ServiceAccount
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        managedServiceAccount: true
+        serviceAccount: "test-sa"
+      api:
+        deployment:
+          serviceAccount: "apim-api"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: "apim-api"
+
+  - it: Deploy with long api name
+    template: api/api-deployment.yaml
+    set:
+      api:
+        name: "I-am-a-very-long-name"
+        services:
+          bridge:
+            enabled: true
+            service:
+              externalPort: 92
+              internalPort: 18092
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value: 
+            - containerPort: 8083
+              name: http
+            - containerPort: 18083
+              name: I-am-a-techapi
+            - containerPort: 18092
+              name: I-am-a-v-bridge
+
+  - it: Check DB Less mode
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: Deploy with podSecurityContext
+    template: api/api-deployment.yaml
+    set:
+      api:
+        deployment:
+          podSecurityContext:
+            fsGroup: 1001
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1001
+
+  - it: Default SecurityContext
+    template: api/api-deployment.yaml
+    set:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 1001
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: Override SecurityContext
+    template: api/api-deployment.yaml
+    set:
+      api:
+        deployment:
+          securityContext:
+            runAsUser: 1002
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 1002
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: kubernetes service account projection enabled tests
+    template: api/api-deployment.yaml
+    set:
+      apim:
+        kubernetes:
+          projection:
+            enabled: true
+            expirationSeconds: 600
+            audience: all
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: KUBERNETES_SERVICE_ACCOUNT_TOKEN_PROJECTION_ENABLED
+      - equal:
+          path: spec.template.spec.containers[0].env[0].value
+          value: 'true'
+      - equal:
+          path: spec.template.spec.containers[0].env[1].name
+          value: KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
+          value: '/var/run/secrets/tokens/vault-token'
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: vault-token
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].name
+          value: vault-token
+
+  - it: Auto configure portal entrypoint from servers list
+    template: api/api-deployment.yaml
+    set:
+      gateway:
+        servers:
+          - type: http
+            port: 8082
+            ingress:
+              enabled: true
+              pathType: Prefix
+              path: /
+              hosts:
+                - my.custom.gateway.host
+          - type: http
+            port: 8083
+            ingress:
+              enabled: true
+              pathType: Prefix
+              path: /
+              hosts:
+                - my.custom2.gateway.host
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: portal.entrypoint
+              value: https://my.custom.gateway.host/

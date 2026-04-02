@@ -21,6 +21,8 @@ dawet-demo-env/
 │   ├── tempo/                      # Traces (Filesystem storage)
 │   ├── alloy/                      # OpenTelemetry Collector
 │   └── uptime-kuma/                # Uptime Monitoring UI (Embedded SQLite)
+├── api-gateway/                    # [GitRepo: dawet-demo-env]
+│   └── gravitee/                   # API Management (Bundled Deps)
 ├── ai-workflow/                    # [GitRepo: dawet-demo-ai]
 │   ├── dify/                       # RAG & LLM Ops (Minimal)
 │   ├── weaviate/                   # Vector DB
@@ -48,8 +50,9 @@ dawet-demo-env/
 10. tempo                   # Traces backend (7-day retention)
 11. alloy                   # OTel collector — scrapes, PII-masks, remote_writes
 12. uptime-kuma             # Service health monitoring
-13. deepseek-config         # Deepseek tokens configmap
-14. otel-demo               # Sample app
+13. gravitee                 # API Gateway + Management UI
+14. deepseek-config         # Deepseek tokens configmap
+15. otel-demo               # Sample app
 ```
 
 Each step waits for the previous one to become **Active** before starting.
@@ -94,6 +97,7 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 | Dify | `langgenius/dify` | `ai-workflow` | Minimal (Local Storage) |
 | Weaviate | `weaviate/weaviate` | `ai-workflow` | Standalone |
 | n8n | `n8nio/n8n` | `ai-workflow` | Single replica |
+| **Gravitee APIM** | `gravitee/apim3` | `api-gateway` | NodePort-only, Bundled Deps |
 
 ## 🔑 Demo Credentials
 
@@ -102,6 +106,8 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 | Grafana | `admin` | `admin-demo-123` |
 | PostgreSQL (Unified) | `admin` | `admin-db-123` |
 | Redis | - | `redis-demo-123` |
+| Gravitee APIM | `admin` | `admin` |
+| MySQL (Gravitee) | `gravitee` | `gravitee_password` |
 | Dify Bootstrap | - | `rancher-demo` |
 
 > ⚠️ **Demo credentials only** — not for production use.
@@ -115,6 +121,10 @@ kubectl label cluster.fleet.cattle.io local env=dev -n fleet-default
 | Dify API | 5001 | **30500** | `http://<NODE_IP>:30500` |
 | Dify Web | 3000 | **30501** | `http://<NODE_IP>:30501` |
 | n8n | 5678 | **30520** | `http://<NODE_IP>:30520` |
+| Gravitee UI | 8080 | **30802** | `http://<NODE_IP>:30802` |
+| Gravitee Portal | 8080 | **30803** | `http://<NODE_IP>:30803` |
+| Gravitee API | 8083 | **30883** | `http://<NODE_IP>:30883` |
+| Gravitee Gateway | 8082 | **30882** | `http://<NODE_IP>:30882` |
 | OTel Demo | 8080 | **30800** | `http://<NODE_IP>:30800` |
 
 ## ✅ Validate

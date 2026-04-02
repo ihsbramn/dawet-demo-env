@@ -1,0 +1,181 @@
+suite: Test API Gateway Ingress
+templates:
+  - "gateway/gateway-ingress.yaml"
+tests:
+  - it: Check Ingress extensions/v1beta1
+    set:
+      global:
+        kubeVersion: 1.13.0
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: extensions/v1beta1
+      - notExists:
+          path: spec.ingressClassName
+
+  - it: Check Ingress not enabled if gateway is an Ingress Controller
+    set:
+      gateway:
+        ingressController:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: Check Ingress networking.k8s.io/v1beta1
+    set:
+      global:
+        kubeVersion: 1.15.0
+      gateway:
+        ingress:
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            my-annotation: my-annotation-value
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1beta1
+      - notExists:
+          path: spec.ingressClassName
+      - isNotEmpty:
+          path: metadata.annotations["kubernetes.io/ingress.class"]
+      - isNotEmpty:
+          path: metadata.annotations["my-annotation"]
+
+  - it: Check Ingress networking.k8s.io/v1 without IngressClassName
+    set:
+      gateway:
+        ingress:
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            my-annotation: my-annotation-value
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - notExists:
+          path: spec.ingressClassName
+      - isNotEmpty:
+          path: metadata.annotations["kubernetes.io/ingress.class"]
+      - isNotEmpty:
+          path: metadata.annotations["my-annotation"]
+
+  - it: Check Ingress networking.k8s.io/v1 with IngressClassName
+    set:
+      gateway:
+        ingress:
+          ingressClassName: nginx
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            my-annotation: my-annotation-value
+            nginx.ingress.kubernetes.io/rewrite-target: /$1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - notExists:
+          path: metadata.annotations["kubernetes.io/ingress.class"]
+      - isNotEmpty:
+          path: metadata.annotations["my-annotation"]
+      - isNotEmpty:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/rewrite-target"]
+
+  - it: Check Ingress networking.k8s.io/v1 with ingress.class notNginx
+    set:
+      gateway:
+        ingress:
+          ingressClassName: nginx
+          annotations:
+            kubernetes.io/ingress.class: notNginx
+            my-annotation: my-annotation-value
+            nginx.ingress.kubernetes.io/rewrite-target: /$1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - notExists:
+          path: metadata.annotations["kubernetes.io/ingress.class"]
+      - isNotEmpty:
+          path: metadata.annotations["my-annotation"]
+      - notExists:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/rewrite-target"]
+
+  - it: Check Ingress pathType and path
+    set:
+      gateway:
+        ingress:
+          pathType: Exact
+          path: /test-gateway
+    asserts:
+      - equal:
+          path: spec.rules[0].http.paths[0].pathType
+          value: Exact
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: /test-gateway
+
+  - it: Check DB Less mode
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+
+  - it: Check Ingress host with wildcard
+    set:
+      gateway:
+        ingress:
+          hosts:
+            - "*.apim.example.com"
+    asserts:
+      - equal:
+          path: spec.rules[0].host
+          value: "*.apim.example.com"
+
+  - it: Check multi-server, multi-service settings
+    set:
+      gateway:
+        servers:
+          - type: http
+            port: 8080
+            ingress:
+              enabled: true
+              pathType: Prefix
+              path: /test-gateway
+              hosts:
+                - apim.example.com
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Ingress
+      - isAPIVersion:
+          of: networking.k8s.io/v1
+      - equal:
+          path: spec.rules[0].http.paths[0].pathType
+          value: Prefix
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: /test-gateway

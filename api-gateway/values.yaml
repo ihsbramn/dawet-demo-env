@@ -1,0 +1,706 @@
+# Default values for gravitee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+common:
+  labels: {}
+  annotations: {}
+
+# -- Array of extra K8s manifests to deploy
+extraObjects: []
+  #- apiVersion: v1
+  #  kind: Secret
+  #  metadata:
+  #    name: gravitee-license
+  #    namespace: graviteeio
+  #  type: Opaque
+  #  data:
+  #    license.key: myLicenceInBase64==
+
+installation:
+  type: standalone
+  api:
+    url:
+  standalone:
+# If you want to use multiple environments with different consoles/portals, you can configure the URL below.
+    console:
+      urls:
+#        - orgId: DEFAULT
+#          url: https://4-2-x-multi-console.console1.team-apim.gravitee.dev
+#        - orgId: 6eb27b47-2560-481f-b27b-472560581fff
+#          url: https://4-2-x-multi-console.console2.team-apim.gravitee.dev
+    portal:
+      urls:
+#        - envId: DEFAULT
+#          url: https://4-2-x-multi-console.portal1.team-apim.gravitee.dev
+#        - envId: 808a51a9-48f5-4517-8a51-a948f5e517b3
+#          url: https://4-2-x-multi-console.portal2.team-apim.gravitee.dev
+    gamma-console:
+      urls:
+#        - orgId: DEFAULT
+#          url: https://4-2-x-multi-gamma-console1.team-apim.gravitee.dev
+#        - orgId: 808a51a9-48f5-4517-8a51-a948f5e517b3
+#          url: https://4-2-x-multi-gamma-console2.team-apim.gravitee.dev
+# Create NetworkPolicy objects
+# https://kubernetes.io/docs/concepts/services-networking/network-policies/
+networkPolicy: {}
+
+gamma:
+  enabled: false
+
+apim:
+  name: apim
+  # Whether this chart should self-manage its service account, role, and associated role binding.
+  managedServiceAccount: true
+
+  # Custom service account override that the pod will use
+  # if customer provides a dedicated SA for any component, that will have the priority
+  serviceAccount: ""
+
+  roleRules:
+    - apiGroups:
+        - ""
+      resources:
+        - configmaps
+        - secrets
+      verbs:
+        - get
+        - list
+        - watch
+
+  dbLess: false
+
+  kubernetes:
+    projection:
+      enabled: false
+      expirationSeconds: 2592000
+      audience: vault
+
+chaos:
+  enabled: false
+
+graviteeRepoAuth:
+  enabled: true
+
+inMemoryAuth:
+  enabled: true
+  allowEmailInSearchResults: false
+  passwordEncodingAlgo: bcrypt
+
+jwtSecret: myJWT4Gr4v1t33_S3cr3t
+
+# Define extra inMemory users here or disable the default ones here
+adminAccountEnable: true
+# Default password "admin", use bcrypt ($2a$ version) to generate a new one
+adminPasswordBcrypt: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
+adminEmail:
+adminFirstName:
+adminLastName:
+
+extraInMemoryUsers: |
+  - user:
+    username: user
+    # Password value: password
+    password: $2a$10$9kjw/SH9gucCId3Lnt6EmuFreUAcXSZgpvAYuW2ISv7hSOhHRH1AO
+    roles: ORGANIZATION:USER, ENVIRONMENT:USER
+  - user:
+    username: api1
+    # Password value: api1
+    password: $2a$10$iXdXO4wAYdhx2LOwijsp7.PsoAZQ05zEdHxbriIYCbtyo.y32LTji
+    roles: ORGANIZATION:USER, ENVIRONMENT:API_PUBLISHER
+  - user:
+    username: application1
+    # Password value: application1
+    password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
+    roles: ORGANIZATION:USER, ENVIRONMENT:USER
+
+ldap:
+  enabled: false
+
+security:
+  trustAll: false
+  providers: []
+oidcAuth:
+  enabled: false
+
+smtp:
+  enabled: true
+
+notifiers:
+  smtp:
+    enabled: true
+    host: ${email.host}
+    subject: ${email.subject}
+    port: ${email.port}
+    from: ${email.from}
+    username: ${email.username}
+    password: ${email.password}
+
+mongo:
+  sslEnabled: false
+  socketKeepAlive: false
+  rs: rs0
+  rsEnabled: true
+  dbhost: graviteeio-apim-mongodb-replicaset-headless
+  dbname: gravitee
+  dbport: 27017
+  connectTimeoutMS: 30000
+  auth:
+    enabled: false
+    source: admin
+    username:
+    password:
+
+jdbc:
+  url: jdbc:mysql://gravitee-mysql:3306/gravitee
+  driver: https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.22/mysql-connector-java-8.0.22.jar
+  username: gravitee
+  password: gravitee_password
+  enabled: true
+  liquibase: true
+  schema: public
+  pool:
+    autoCommit:  true
+    connectionTimeout: 10000
+    idleTimeout: 600000
+    maxLifetime: 1800000
+    minIdle: 10
+    maxPoolSize: 10
+    registerMbeans: true
+
+mysql:
+  enabled: true
+  fullnameOverride: "gravitee-mysql"
+  auth:
+    database: gravitee
+    username: gravitee
+    password: gravitee_password
+    rootPassword: root_gravitee_password
+  primary:
+    persistence:
+      size: 8Gi
+
+redis:
+  download: true
+
+mongodb:
+  enabled: true
+  architecture: replicaset
+  fullnameOverride: "graviteeio-apim-mongodb-replicaset"
+  replicaSetName: rs0
+  podAffinityPreset: soft
+  image:
+    repository: bitnamilegacy/mongodb
+    tag: 6.0.13
+  auth:
+    enabled: false
+  resources:
+    limits:
+      cpu: 1
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+
+es:
+  enabled: true
+  cluster: elasticsearch
+  index: gravitee
+  index_mode: daily
+  settings:
+    number_of_shards: 1
+    number_of_replicas: 1
+    refresh_interval: 5s
+  security:
+    enabled: false
+    username: example
+    password: example
+  lifecycle:
+    enabled: false
+    policyPropertyName: index.lifecycle.name
+    rolloverAliasPropertyName: index.lifecycle.rollover_alias
+    policies:
+      monitor: my_policy
+      request: my_policy
+      health: my_policy
+      log: my_policy
+  ssl:
+    enabled: false
+  endpoints:
+    - http://graviteeio-apim-elasticsearch-ingest-hl:9200
+  pipeline:
+    plugins:
+      ingest: geoip, user_agent
+
+elasticsearch:
+  enabled: true
+  name: "elasticsearch"
+  fullnameOverride: "graviteeio-apim-elasticsearch"
+  image:
+    repository: "bitnamilegacy/elasticsearch"
+    tag: "8.17.4"
+  master:
+    replicaCount: 2
+    persistence:
+      size: 4Gi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1024Mi
+      requests:
+        cpu: 25m
+        memory: 256Mi
+  coordinating:
+    replicaCount: 2
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1024Mi
+      requests:
+        cpu: 25m
+        memory: 256Mi
+  data:
+    replicaCount: 2
+    heapSize: 512m
+    resources:
+      limits:
+        cpu: 1
+        memory: 2048Mi
+      requests:
+        cpu: 50m
+        memory: 1024Mi
+    persistence:
+      size: 20Gi
+
+alerts:
+  enabled: false
+
+management:
+  type: jdbc
+
+ratelimit:
+  type: mongodb
+
+cockpit:
+  enabled: false
+
+cloud:
+  enabled: false
+
+cluster:
+  plugins:
+    - https://download.gravitee.io/pre-releases/plugins/node-cache/gravitee-node-cache-plugin-hazelcast/gravitee-node-cache-plugin-hazelcast-8.0.0-alpha.13.zip
+    - https://download.gravitee.io/pre-releases/plugins/node-cluster/gravitee-node-cluster-plugin-hazelcast/gravitee-node-cluster-plugin-hazelcast-8.0.0-alpha.13.zip
+
+api:
+  enabled: true
+  upgrader: false
+  name: api
+  logging:
+    debug: false
+    contextualLoggingEnabled: false
+    stdout:
+      json: false
+      ecs: false
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  node:
+    logging:
+      mdc:
+        format: "{key}: {value}"
+        separator: " "
+        nullValue: "-"
+        include:
+          - nodeId
+          - envId
+          - apiId
+          - appId
+      pattern:
+        overrideLogbackXml: false
+        console: "%d{HH:mm:ss.SSS} [%thread] [%mdcList] %-5level %logger{36} - %msg%n"
+  restartPolicy: OnFailure
+  reloadOnConfigChange: true
+  deployment:
+    annotations: {}
+    labels: {}
+    affinity: {}
+    hostAliases: []
+    nodeSelector: {}
+    tolerations: []
+    envFrom: []
+    podSecurityContext: {}
+    securityContext:
+      runAsUser: 1001
+      runAsNonRoot: true
+    serviceAccount: ""
+    strategy:
+      type: RollingUpdate
+    topologySpreadConstraints: []
+  configuration:
+    logging: {}
+  pdb:
+    enabled: false
+  updateStrategy:
+    type: RollingUpdate
+  replicaCount: 1
+  image:
+    repository: graviteeio/apim-management-api
+    pullPolicy: Always
+  env: []
+  additionalPlugins: []
+  ssl:
+    enabled: false
+  services:
+    metrics:
+      enabled: false
+    bridge:
+      enabled: false
+      service:
+        externalPort: 92
+        internalPort: 18092
+      ingress:
+        enabled: false
+    subscription:
+      enabled: false
+  http:
+    services:
+      core:
+        http:
+          enabled: true
+          port: 18083
+          host: localhost
+        ingress:
+          enabled: false
+        service:
+          enabled: false
+    api:
+      entrypoint: /
+    secureHeaders:
+      csrf:
+        enabled: true
+      hsts:
+        enabled: true
+      xframe:
+        enabled: true
+        action: SAMEORIGIN
+      xContentTypeOptions:
+        enabled: true
+      csp:
+        policy: "frame-ancestors 'self';"
+      referrerPolicy:
+        policy: "strict-origin-when-cross-origin"
+      permissionsPolicy:
+        policy: "geolocation=(), microphone=(), camera=()"
+  user:
+    login:
+      defaultApplication: true
+  supportEnabled: true
+  ratingEnabled: true
+  newsletterEnabled: true
+  gateway:
+    unknownExpireAfter: 604800
+  service:
+    type: NodePort
+    externalTrafficPolicy: Cluster
+    externalPort: 83
+    internalPort: 8083
+    internalPortName: http
+    nodePort: 30883
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  ingress:
+    management:
+      enabled: false
+      scheme: https
+      pathType: Prefix
+      path: /management
+      ingressClassName: ""
+      hosts:
+        - apim.example.com
+    portal:
+      enabled: false
+      scheme: https
+      pathType: Prefix
+      path: /portal
+      ingressClassName: ""
+      hosts:
+        - apim.example.com
+    automation:
+      enabled: false
+    gamma:
+      enabled: false
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  analytics:
+    type: elasticsearch
+  newtai:
+    elgen:
+      enabled: false
+  federation:
+    enabled: false
+
+gateway:
+  enabled: true
+  ingressController:
+    enabled: false
+  dbLess: false
+  type: Deployment
+  name: gateway
+  http:
+    maxHeaderSize: 8192
+    maxChunkSize: 8192
+    maxInitialLineLength: 4096
+    maxFormAttributeSize: 2048
+    alpn: "true"
+    requestTimeout: 30000
+    requestTimeoutGraceDelay: 30
+  logging:
+    debug: false
+    stdout:
+      json: false
+      ecs: false
+      encoderPattern: "%d{HH:mm:ss.SSS} [%thread] [%X{api}] %-5level %logger{36} - %msg%n"
+  node:
+    logging:
+      mdc:
+        format: "{key}: {value}"
+        separator: " "
+        nullValue: "-"
+        include:
+          - nodeId
+          - apiId
+      pattern:
+        overrideLogbackXml: false
+        console: "%d{HH:mm:ss.SSS} [%thread] [%mdcList] %-5level %logger{36} - %msg%n"
+  reloadOnConfigChange: true
+  deployment:
+    annotations: {}
+    labels: {}
+    affinity: {}
+    hostAliases: []
+    nodeSelector: {}
+    tolerations: []
+    envFrom: []
+    podSecurityContext: {}
+    securityContext:
+      runAsUser: 1001
+      runAsNonRoot: true
+    serviceAccount: ""
+    strategy:
+      type: RollingUpdate
+    topologySpreadConstraints: []
+    startupProbe:
+      enabled: true
+    livenessProbe:
+      enabled: true
+    readinessProbe:
+      enabled: true
+  pdb:
+    enabled: false
+  podAnnotations: {}
+  terminationGracePeriod: 30
+  replicaCount: 1
+  websocket: false
+  ratelimit: {}
+  management:
+    http: {}
+  services:
+    core:
+      http:
+        enabled: true
+        port: 18082
+        host: 0.0.0.0
+      ingress:
+        enabled: false
+      service:
+        enabled: false
+    kafka:
+      enabled: true
+    bridge:
+      enabled: false
+    metrics:
+      enabled: false
+    sync:
+      enabled: true
+    healthcheck:
+      jitterInMs: 900
+    heartbeat:
+      enabled: true
+  gracefulShutdown:
+    delay: 0
+  classloader:
+    legacy:
+      enabled: false
+  apiKey:
+    header: X-Gravitee-Api-Key
+    param: api-key
+  image:
+    repository: graviteeio/apim-gateway
+    pullPolicy: Always
+  service:
+    type: NodePort
+    externalTrafficPolicy: Cluster
+    externalPort: 82
+    internalPort: 8082
+    internalPortName: http
+    nodePort: 30882
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  ingress:
+    enabled: false
+    pathType: Prefix
+    path: /
+    ingressClassName: ""
+    hosts:
+      - apim.example.com
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+portal:
+  enabled: true
+  name: portal
+  replicaCount: 1
+  image:
+    repository: graviteeio/apim-portal-ui
+    pullPolicy: Always
+  deployment:
+    annotations: {}
+    labels: {}
+    affinity: {}
+    hostAliases: []
+    nodeSelector: {}
+    tolerations: []
+    envFrom: []
+    podSecurityContext: {}
+    securityContext:
+      runAsUser: 101
+      runAsGroup: 101
+      runAsNonRoot: true
+    serviceAccount: ""
+    strategy:
+      type: RollingUpdate
+  pdb:
+    enabled: false
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  service:
+    name: nginx
+    type: NodePort
+    externalTrafficPolicy: Cluster
+    externalPort: 8003
+    internalPort: 8080
+    internalPortName: http
+    nodePort: 30803
+  ingress:
+    enabled: false
+    pathType: Prefix
+    path: /
+    ingressClassName: ""
+    hosts:
+      - apim.example.com
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  defaultPortal: "classic"
+
+ui:
+  enabled: true
+  name: ui
+  replicaCount: 1
+  image:
+    repository: graviteeio/apim-management-ui
+    pullPolicy: Always
+  deployment:
+    annotations: {}
+    labels: {}
+    affinity: {}
+    hostAliases: []
+    nodeSelector: {}
+    tolerations: []
+    envFrom: []
+    podSecurityContext: {}
+    securityContext:
+      runAsUser: 101
+      runAsGroup: 101
+      runAsNonRoot: true
+    serviceAccount: ""
+    strategy:
+      type: RollingUpdate
+  pdb:
+    enabled: false
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetAverageUtilization: 50
+    targetMemoryAverageUtilization: 80
+  service:
+    name: nginx
+    type: NodePort
+    externalTrafficPolicy: Cluster
+    externalPort: 8002
+    internalPort: 8080
+    internalPortName: http
+    nodePort: 30802
+  ingress:
+    enabled: false
+    pathType: ImplementationSpecific
+    path: /console(/.*)?
+    ingressClassName: ""
+    hosts:
+      - apim.example.com
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+gammaUi:
+  enabled: false
+
+kafkaConsole:
+  enabled: false
+
+openshift:
+  enabled: false
+
+initContainers:
+  image: alpine:latest
+  imagePullPolicy: Always
+  securityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
+
+license:
+  name: licensekey-apim
