@@ -23,7 +23,7 @@ extraObjects: []
 installation:
   type: standalone
   api:
-    url: "http://localhost:30883/management"
+    url: "http://172.30.128.226:30883"
   standalone:
 # If you want to use multiple environments with different consoles/portals, you can configure the URL below.
     console:
@@ -571,7 +571,7 @@ gateway:
 
 portal:
   enabled: true
-  baseURL: "http://localhost:30883/portal"
+  baseURL: "http://172.30.128.226:30883"
   name: portal
   replicaCount: 1
   image:
@@ -623,9 +623,9 @@ portal:
 
 ui:
   enabled: true
-  baseURL: "http://localhost:30883/management"
+  baseURL: "http://172.30.128.226:30883"
   portal:
-    entrypoint: "http://localhost:30882"
+    entrypoint: "http://172.30.128.226:30882"
   name: ui
   replicaCount: 1
   image:
