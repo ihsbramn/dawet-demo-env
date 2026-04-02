@@ -240,6 +240,8 @@ elasticsearch:
   enabled: true
   name: "elasticsearch"
   fullnameOverride: "graviteeio-apim-elasticsearch"
+  sysctlImage:
+    repository: bitnamilegacy/os-shell
   image:
     repository: "bitnamilegacy/elasticsearch"
     tag: "8.17.4"
