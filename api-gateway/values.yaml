@@ -408,11 +408,7 @@ api:
     internalPortName: http
     nodePort: 30883
   autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetAverageUtilization: 50
-    targetMemoryAverageUtilization: 80
+    enabled: false
   ingress:
     management:
       enabled: false
@@ -555,11 +551,7 @@ gateway:
     internalPortName: http
     nodePort: 30882
   autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetAverageUtilization: 50
-    targetMemoryAverageUtilization: 80
+    enabled: false
   ingress:
     enabled: false
     pathType: Prefix
@@ -601,11 +593,7 @@ portal:
   pdb:
     enabled: false
   autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetAverageUtilization: 50
-    targetMemoryAverageUtilization: 80
+    enabled: false
   service:
     name: nginx
     type: NodePort
@@ -656,11 +644,7 @@ ui:
   pdb:
     enabled: false
   autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetAverageUtilization: 50
-    targetMemoryAverageUtilization: 80
+    enabled: false
   service:
     name: nginx
     type: NodePort
