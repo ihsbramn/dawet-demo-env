@@ -23,27 +23,15 @@ extraObjects: []
 installation:
   type: standalone
   api:
-    url:
+    # URL of the Management REST API — used by the Console UI configmap
+    url: http://172.30.128.226:30080/gravitee/management
   standalone:
-# If you want to use multiple environments with different consoles/portals, you can configure the URL below.
     console:
       urls:
-#        - orgId: DEFAULT
-#          url: https://4-2-x-multi-console.console1.team-apim.gravitee.dev
-#        - orgId: 6eb27b47-2560-481f-b27b-472560581fff
-#          url: https://4-2-x-multi-console.console2.team-apim.gravitee.dev
     portal:
       urls:
-#        - envId: DEFAULT
-#          url: https://4-2-x-multi-console.portal1.team-apim.gravitee.dev
-#        - envId: 808a51a9-48f5-4517-8a51-a948f5e517b3
-#          url: https://4-2-x-multi-console.portal2.team-apim.gravitee.dev
     gamma-console:
       urls:
-#        - orgId: DEFAULT
-#          url: https://4-2-x-multi-gamma-console1.team-apim.gravitee.dev
-#        - orgId: 808a51a9-48f5-4517-8a51-a948f5e517b3
-#          url: https://4-2-x-multi-gamma-console2.team-apim.gravitee.dev
 # Create NetworkPolicy objects
 # https://kubernetes.io/docs/concepts/services-networking/network-policies/
 networkPolicy: {}
@@ -431,7 +419,8 @@ api:
       pathType: ImplementationSpecific
       path: /gravitee/management(/|$)(.*)
       ingressClassName: nginx
-      hosts: []
+      hosts:
+        - 172.30.128.226
       annotations:
         nginx.ingress.kubernetes.io/rewrite-target: /management/$2
         nginx.ingress.kubernetes.io/use-regex: "true"
@@ -442,7 +431,8 @@ api:
       pathType: ImplementationSpecific
       path: /gravitee/portal-api(/|$)(.*)
       ingressClassName: nginx
-      hosts: []
+      hosts:
+        - 172.30.128.226
       annotations:
         nginx.ingress.kubernetes.io/rewrite-target: /portal/$2
         nginx.ingress.kubernetes.io/use-regex: "true"
@@ -578,7 +568,8 @@ gateway:
     pathType: ImplementationSpecific
     path: /gravitee/gateway(/|$)(.*)
     ingressClassName: nginx
-    hosts: []
+    hosts:
+      - 172.30.128.226
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/use-regex: "true"
@@ -626,12 +617,13 @@ portal:
     internalPortName: http
     nodePort: 30803
   ingress:
-    # --- Developer Portal UI: nodeIP:30080/gravitee/portal-ui ---
+    # --- Developer Portal UI: nodeIP:30080/gravitee/portal ---
     enabled: true
     pathType: ImplementationSpecific
     path: /gravitee/portal(/|$)(.*)
     ingressClassName: nginx
-    hosts: []
+    hosts:
+      - 172.30.128.226
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/use-regex: "true"
@@ -685,7 +677,8 @@ ui:
     pathType: ImplementationSpecific
     path: /gravitee/console(/|$)(.*)
     ingressClassName: nginx
-    hosts: []
+    hosts:
+      - 172.30.128.226
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
       nginx.ingress.kubernetes.io/use-regex: "true"

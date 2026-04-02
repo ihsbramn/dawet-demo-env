@@ -11,6 +11,6 @@ spec:
     - observability
     - ai-workflow/dify
     - ai-workflow/n8n
-    - api-gateway/ingress-nginx
+    - ingress-nginx
     - api-gateway
     - sample-apps
