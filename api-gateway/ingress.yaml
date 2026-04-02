@@ -1,0 +1,89 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gravitee-apim-ingress
+  namespace: api-gateway
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+spec:
+  rules:
+    - host: "172.30.128.226"
+      http:
+        paths:
+          # --- Management Console UI ---
+          - path: /gravitee/console(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gravitee-ui
+                port:
+                  number: 8080
+          # --- Developer Portal UI ---
+          - path: /gravitee/portal(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gravitee-portal
+                port:
+                  number: 8080
+          # --- Gateway ---
+          - path: /gravitee/gateway(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gravitee-gateway
+                port:
+                  number: 8082
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gravitee-apim-api-ingress
+  namespace: api-gateway
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /management/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: "172.30.128.226"
+      http:
+        paths:
+          # --- Management REST API ---
+          - path: /gravitee/management(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gravitee-api
+                port:
+                  number: 8083
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gravitee-apim-portal-api-ingress
+  namespace: api-gateway
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /portal/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: "172.30.128.226"
+      http:
+        paths:
+          # --- Portal REST API ---
+          - path: /gravitee/portal-api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gravitee-api
+                port:
+                  number: 8083
