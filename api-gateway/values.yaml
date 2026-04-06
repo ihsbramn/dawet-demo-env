@@ -23,8 +23,8 @@ extraObjects: []
 installation:
   type: standalone
   api:
-    # URL of the Management REST API — used by the Console UI configmap
-    url: http://172.30.128.226:30080/gravitee/management
+    # URL of the Management REST API — auto-built from api.ingress.management when left empty
+    url:
   standalone:
     console:
       urls:
@@ -413,6 +413,7 @@ api:
     # --- Management REST API ---
     management:
       enabled: true
+      scheme: http
       path: /management
       pathType: Prefix
       ingressClassName: nginx
