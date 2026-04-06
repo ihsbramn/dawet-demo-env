@@ -383,6 +383,7 @@ api:
             nginx.ingress.kubernetes.io/rewrite-target: /_$1
         service:
           enabled: false
+          
     api:
       entrypoint: /
     secureHeaders:
