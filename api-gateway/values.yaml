@@ -373,7 +373,14 @@ api:
           port: 18083
           host: localhost
         ingress:
-          enabled: false
+          enabled: true
+          ingressClassName: nginx
+          pathType: ImplementationSpecific
+          path: /management/_(.*)
+          hosts:
+            - gravitee80.demo.bankntbsyariah.co.id
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /_$1
         service:
           enabled: false
     api:
