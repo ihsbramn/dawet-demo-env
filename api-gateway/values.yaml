@@ -554,7 +554,7 @@ gateway:
     enabled: false
   ingress:
     enabled: true
-    path: /
+    path: /gateway
     pathType: Prefix
     ingressClassName: nginx
     hosts:
@@ -602,11 +602,13 @@ portal:
     internalPortName: http
   ingress:
     enabled: true
-    path: /
-    pathType: Prefix
+    pathType: ImplementationSpecific
+    path: /gateway(/.*)?
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /
   resources:
