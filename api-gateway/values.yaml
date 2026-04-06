@@ -418,7 +418,7 @@ api:
       pathType: Prefix
       ingressClassName: nginx
       hosts:
-        - gravitee80.demo.bankntbsyariah.co.id
+        - gravitee43.demo.bankntbsyariah.co.id
     # --- Portal REST API ---
     portal:
       enabled: true
@@ -426,7 +426,7 @@ api:
       pathType: Prefix
       ingressClassName: nginx
       hosts:
-        - gravitee80.demo.bankntbsyariah.co.id
+        - gravitee43.demo.bankntbsyariah.co.id
     automation:
       enabled: false
     gamma:
@@ -557,7 +557,7 @@ gateway:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee80.demo.bankntbsyariah.co.id
+      - gravitee43.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 500m
@@ -605,7 +605,7 @@ portal:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee80.demo.bankntbsyariah.co.id
+      - gravitee43.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 100m
@@ -654,7 +654,7 @@ ui:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee80.demo.bankntbsyariah.co.id
+      - gravitee43.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 100m
