@@ -422,7 +422,7 @@ api:
 
     portal:
       enabled: true
-      path: /portal
+      path: /portal/api
       pathType: Prefix
       ingressClassName: nginx
       hosts:
@@ -602,7 +602,7 @@ portal:
     internalPortName: http
   ingress:
     enabled: true
-    path: /
+    path: /portal
     pathType: Prefix
     ingressClassName: nginx
     hosts:
