@@ -413,19 +413,12 @@ api:
     # --- Management REST API ---
     management:
       enabled: true
-      scheme: https
+      scheme: http
       path: /management
       pathType: Prefix
       ingressClassName: nginx
       hosts:
-        - gravitee43.demo.bankntbsyariah.co.id
-      annotations:
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-        # Uncomment and change this to your cert-manager issuer:
-        # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      tls:
-        - hosts:
-            - gravitee43.demo.bankntbsyariah.co.id
+        - gravitee80.demo.bankntbsyariah.co.id
 
     portal:
       enabled: true
@@ -433,13 +426,7 @@ api:
       pathType: Prefix
       ingressClassName: nginx
       hosts:
-        - gravitee43.demo.bankntbsyariah.co.id
-      annotations:
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-        # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      tls:
-        - hosts:
-            - gravitee43.demo.bankntbsyariah.co.id
+        - gravitee80.demo.bankntbsyariah.co.id
 
     automation:
       enabled: false
@@ -571,13 +558,7 @@ gateway:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee43.demo.bankntbsyariah.co.id
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    tls:
-      - hosts:
-          - gravitee43.demo.bankntbsyariah.co.id
+      - gravitee80.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 500m
@@ -625,13 +606,7 @@ portal:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee43.demo.bankntbsyariah.co.id
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    tls:
-      - hosts:
-          - gravitee43.demo.bankntbsyariah.co.id
+      - gravitee80.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 100m
@@ -680,13 +655,7 @@ ui:
     pathType: Prefix
     ingressClassName: nginx
     hosts:
-      - gravitee43.demo.bankntbsyariah.co.id
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    tls:
-      - hosts:
-          - gravitee43.demo.bankntbsyariah.co.id
+      - gravitee80.demo.bankntbsyariah.co.id
   resources:
     limits:
       cpu: 100m
