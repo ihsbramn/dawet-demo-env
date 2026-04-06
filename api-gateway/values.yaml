@@ -382,8 +382,9 @@ api:
           annotations:
             nginx.ingress.kubernetes.io/rewrite-target: /_$1
         service:
-          enabled: false
-          
+          enabled: true
+          type: ClusterIP
+          externalPort: 18083
     api:
       entrypoint: /
     secureHeaders:
