@@ -442,9 +442,6 @@ api:
     gamma:
       enabled: false
   resources:
-    limits:
-      cpu: 500m
-      memory: 1024Mi
     requests:
       cpu: 200m
       memory: 512Mi
@@ -571,9 +568,6 @@ gateway:
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$1
   resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
     requests:
       cpu: 200m
       memory: 256Mi
@@ -621,9 +615,6 @@ portal:
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /
   resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
     requests:
       cpu: 50m
       memory: 64Mi
@@ -672,9 +663,6 @@ ui:
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$1
   resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
     requests:
       cpu: 50m
       memory: 64Mi
