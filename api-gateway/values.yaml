@@ -413,7 +413,7 @@ api:
     # --- Management REST API ---
     management:
       enabled: true
-      scheme: http
+      scheme: https
       path: /management
       pathType: Prefix
       ingressClassName: nginx
