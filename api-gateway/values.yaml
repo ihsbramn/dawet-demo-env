@@ -422,7 +422,7 @@ api:
 
     portal:
       enabled: true
-      path: /portal/api
+      path: /portal
       pathType: Prefix
       ingressClassName: nginx
       hosts:
@@ -602,11 +602,13 @@ portal:
     internalPortName: http
   ingress:
     enabled: true
-    path: /portal
+    path: /
     pathType: Prefix
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
   resources:
     limits:
       cpu: 100m
@@ -651,11 +653,13 @@ ui:
     internalPortName: http
   ingress:
     enabled: true
-    path: /console
-    pathType: Prefix
+    pathType: ImplementationSpecific
+    path: /console(/.*)?
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
   resources:
     limits:
       cpu: 100m
