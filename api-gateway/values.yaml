@@ -211,7 +211,7 @@ mongodb:
       enabled: false
 
 es:
-  enabled: true
+  enabled: false
   cluster: elasticsearch
   index: gravitee
   index_mode: daily
@@ -241,7 +241,7 @@ es:
       ingest: geoip, user_agent
 
 elasticsearch:
-  enabled: true
+  enabled: false
   name: "elasticsearch"
   fullnameOverride: "graviteeio-apim-elasticsearch"
   sysctlImage:
@@ -618,7 +618,7 @@ portal:
     requests:
       cpu: 50m
       memory: 64Mi
-  defaultPortal: "next"
+  defaultPortal: "classic"
 
 ui:
   enabled: true
