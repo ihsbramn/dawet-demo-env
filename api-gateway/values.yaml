@@ -562,12 +562,12 @@ gateway:
   ingress:
     enabled: true
     pathType: ImplementationSpecific
-    path: /gateway(/|$)(.*)
+    path: /gateway(.*)
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /$2
+#      nginx.ingress.kubernetes.io/rewrite-target: /$1
   resources:
     requests:
       cpu: 200m
@@ -657,12 +657,12 @@ ui:
   ingress:
     enabled: true
     pathType: ImplementationSpecific
-    path: /console(/|$)(.*)
+    path: /console(/.*)?
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
   resources:
     requests:
       cpu: 50m
