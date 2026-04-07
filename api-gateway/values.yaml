@@ -553,14 +553,14 @@ gateway:
     repository: graviteeio/apim-gateway
     pullPolicy: Always
   service:
-    type: ClusterIP
+    type: NodePort
     externalPort: 82
     internalPort: 8082
     internalPortName: http
   autoscaling:
     enabled: false
   ingress:
-    enabled: true
+    enabled: disable
     pathType: ImplementationSpecific
     path: /gateway(/|$)(.*)
     ingressClassName: nginx
