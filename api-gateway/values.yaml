@@ -355,7 +355,9 @@ api:
     enabled: false
   services:
     metrics:
-      enabled: false
+      enabled: true
+      prometheus:
+        enabled: true
     bridge:
       enabled: false
       service:
@@ -372,6 +374,8 @@ api:
           enabled: true
           port: 18083
           host: localhost
+          authentication:
+            type: none
         ingress:
           enabled: true
           ingressClassName: nginx
@@ -525,6 +529,8 @@ gateway:
         enabled: true
         port: 18082
         host: 0.0.0.0
+        authentication:
+          type: none
       ingress:
         enabled: false
       service:
@@ -534,7 +540,9 @@ gateway:
     bridge:
       enabled: false
     metrics:
-      enabled: false
+      enabled: true
+      prometheus:
+        enabled: true
     sync:
       enabled: true
     healthcheck:
