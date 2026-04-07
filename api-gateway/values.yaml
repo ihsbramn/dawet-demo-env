@@ -549,11 +549,16 @@ gateway:
       jitterInMs: 900
     heartbeat:
       enabled: true
+  env:
+    - name: GRAVITEE_SERVICES_METRICS_ENABLED
+      value: "true"
+    - name: GRAVITEE_SERVICES_METRICS_PROMETHEUS_ENABLED
+      value: "true"
   gracefulShutdown:
     delay: 0
   classloader:
     legacy:
-      enabled: false
+      enabled: true
   apiKey:
     header: X-Gravitee-Api-Key
     param: api-key
