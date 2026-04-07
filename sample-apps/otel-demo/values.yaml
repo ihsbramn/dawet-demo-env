@@ -146,7 +146,7 @@ components:
         value: 16MiB
     resources:
       limits:
-        memory: 20Mi
+        memory: 200Mi
     initContainers:
       - name: wait-for-kafka
         image: busybox:latest
@@ -171,7 +171,7 @@ components:
         value: "false"
     resources:
       limits:
-        memory: 20Mi
+        memory: 200Mi
 
   email:
     enabled: true
@@ -336,7 +336,7 @@ components:
         value: "4318"
     resources:
       limits:
-        memory: 65Mi
+        memory: 200Mi
     securityContext:
       runAsUser: 101  # envoy
       runAsGroup: 101
@@ -406,7 +406,7 @@ components:
         value: http://$(OTEL_COLLECTOR_NAME):4317
     resources:
       limits:
-        memory: 2Gi # Reduced from 1500Mi for 8GB Mac optimization
+        memory: 4Gi # Reduced from 1500Mi for 8GB Mac optimization
 
   payment:
     enabled: true
