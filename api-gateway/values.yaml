@@ -561,13 +561,17 @@ gateway:
     enabled: false
   ingress:
     enabled: true
-    pathType: ImplementationSpecific
-    path: /management/_(.*)
+    pathType: Prefix
+    path: /gateway
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /_$1
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+      nginx.ingress.kubernetes.io/app-root: /gateway
+      nginx.ingress.kubernetes.io/rewrite-target: /gateway
   resources:
     requests:
       cpu: 200m
