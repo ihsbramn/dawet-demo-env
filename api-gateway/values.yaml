@@ -431,6 +431,7 @@ api:
 
     portal:
       enabled: true
+      scheme: http
       path: /portal
       pathType: Prefix
       ingressClassName: nginx
