@@ -560,7 +560,7 @@ gateway:
   autoscaling:
     enabled: false
   ingress:
-    enabled: disable
+    enabled: false
     pathType: ImplementationSpecific
     path: /gateway(/|$)(.*)
     ingressClassName: nginx
