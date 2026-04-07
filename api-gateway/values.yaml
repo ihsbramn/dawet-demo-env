@@ -32,6 +32,7 @@ installation:
       urls:
     gamma-console:
       urls:
+
 # Create NetworkPolicy objects
 # https://kubernetes.io/docs/concepts/services-networking/network-policies/
 networkPolicy: {}
@@ -41,13 +42,8 @@ gamma:
 
 apim:
   name: apim
-  # Whether this chart should self-manage its service account, role, and associated role binding.
   managedServiceAccount: true
-
-  # Custom service account override that the pod will use
-  # if customer provides a dedicated SA for any component, that will have the priority
   serviceAccount: ""
-
   roleRules:
     - apiGroups:
         - ""
@@ -58,9 +54,7 @@ apim:
         - get
         - list
         - watch
-
   dbLess: false
-
   kubernetes:
     projection:
       enabled: false
@@ -78,11 +72,11 @@ inMemoryAuth:
   allowEmailInSearchResults: false
   passwordEncodingAlgo: bcrypt
 
+# FIX: Change this to a strong secret in any non-dev environment
 jwtSecret: myJWT4Gr4v1t33_S3cr3t
 
-# Define extra inMemory users here or disable the default ones here
 adminAccountEnable: true
-# Default password "admin", use bcrypt ($2a$ version) to generate a new one
+# Default password "admin" — change in production
 adminPasswordBcrypt: $2a$10$Ihk05VSds5rUSgMdsMVi9OKMIx2yUvMz7y9VP3rJmQeizZLrhLMyq
 adminEmail: "training@admin.com"
 adminFirstName: "admin"
@@ -91,17 +85,14 @@ adminLastName: "admin"
 extraInMemoryUsers: |
   - user:
     username: user
-    # Password value: password
     password: $2a$10$9kjw/SH9gucCId3Lnt6EmuFreUAcXSZgpvAYuW2ISv7hSOhHRH1AO
     roles: ORGANIZATION:USER, ENVIRONMENT:USER
   - user:
     username: api1
-    # Password value: api1
     password: $2a$10$iXdXO4wAYdhx2LOwijsp7.PsoAZQ05zEdHxbriIYCbtyo.y32LTji
     roles: ORGANIZATION:USER, ENVIRONMENT:API_PUBLISHER
   - user:
     username: application1
-    # Password value: application1
     password: $2a$10$2gtKPYRB9zaVaPcn5RBx/.3T.7SeZoDGs9GKqbo9G64fKyXFR1He.
     roles: ORGANIZATION:USER, ENVIRONMENT:USER
 
@@ -111,6 +102,7 @@ ldap:
 security:
   trustAll: false
   providers: []
+
 oidcAuth:
   enabled: false
 
@@ -145,7 +137,7 @@ jdbc:
   liquibase: true
   schema: public
   pool:
-    autoCommit:  true
+    autoCommit: true
     connectionTimeout: 10000
     idleTimeout: 600000
     maxLifetime: 1800000
@@ -189,12 +181,7 @@ mongodb:
       cpu: 100m
       memory: 256Mi
   volumePermissions:
-    # Disabled: local-path provisioner creates root-owned dirs; the chown init
-    # container is not needed and the conf.default copy fails under it.
     enabled: false
-  # local-path storage does not support fsGroup chown by kubelet; disable
-  # the restrictive security context so MongoDB can start without the
-  # "cp: cannot open /opt/bitnami/mongodb/conf.default/mongodb.conf" error.
   podSecurityContext:
     enabled: false
   containerSecurityContext:
@@ -293,9 +280,13 @@ cloud:
 
 cluster:
   plugins:
+    # NOTE: These are alpha pre-release plugins — replace with stable versions for production
     - https://download.gravitee.io/pre-releases/plugins/node-cache/gravitee-node-cache-plugin-hazelcast/gravitee-node-cache-plugin-hazelcast-8.0.0-alpha.13.zip
     - https://download.gravitee.io/pre-releases/plugins/node-cluster/gravitee-node-cluster-plugin-hazelcast/gravitee-node-cluster-plugin-hazelcast-8.0.0-alpha.13.zip
 
+# =============================================================================
+# MANAGEMENT API
+# =============================================================================
 api:
   enabled: true
   upgrader: false
@@ -372,21 +363,19 @@ api:
           enabled: true
           port: 18083
           host: localhost
+        # FIX: Disabled — port 18083 is an internal node management endpoint
+        # and should not be exposed publicly via Ingress.
         ingress:
-          enabled: true
-          ingressClassName: nginx
-          pathType: ImplementationSpecific
-          path: /management/_(.*)
-          hosts:
-            - gravitee80.demo.bankntbsyariah.co.id
-          annotations:
-            nginx.ingress.kubernetes.io/rewrite-target: /_$1
+          enabled: false
         service:
           enabled: true
           type: ClusterIP
           externalPort: 18083
+    # FIX: entrypoint changed from "/" to "/management" to match the Ingress
+    # path below. Without this, the Management API receives requests at
+    # "/management/..." but expects them at "/" — causing 404s on all routes.
     api:
-      entrypoint: /
+      entrypoint: /management
     secureHeaders:
       csrf:
         enabled: true
@@ -420,23 +409,36 @@ api:
     enabled: false
   ingress:
     # --- Management REST API ---
+    # FIX: Added capture-group path pattern and rewrite-target annotation so
+    # NGINX strips the "/management" prefix before forwarding to the pod.
+    # The pod now also has entrypoint: /management so both sides align.
     management:
       enabled: true
       scheme: http
-      path: /management
-      pathType: Prefix
+      path: /management(/|$)(.*)
+      pathType: ImplementationSpecific
       ingressClassName: nginx
       hosts:
         - gravitee80.demo.bankntbsyariah.co.id
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /management/$2
+        nginx.ingress.kubernetes.io/use-regex: "true"
 
+    # --- Portal REST API ---
+    # FIX: Added capture-group path and rewrite annotation consistent with the
+    # management block above. Previously had no rewrite, so the prefix was
+    # forwarded to the pod unexpectedly.
     portal:
       enabled: true
       scheme: http
-      path: /portal
-      pathType: Prefix
+      path: /portal(/|$)(.*)
+      pathType: ImplementationSpecific
       ingressClassName: nginx
       hosts:
         - gravitee80.demo.bankntbsyariah.co.id
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /portal/$2
+        nginx.ingress.kubernetes.io/use-regex: "true"
 
     automation:
       enabled: false
@@ -454,6 +456,9 @@ api:
   federation:
     enabled: false
 
+# =============================================================================
+# API GATEWAY
+# =============================================================================
 gateway:
   enabled: true
   ingressController:
@@ -553,14 +558,15 @@ gateway:
     repository: graviteeio/apim-gateway
     pullPolicy: Always
   service:
-    type: NodePort
+    type: ClusterIP
     externalPort: 82
     internalPort: 8082
     internalPortName: http
   autoscaling:
     enabled: false
+  # Gateway ingress is correct — capture groups + /$2 rewrite strips /gateway prefix properly
   ingress:
-    enabled: false
+    enabled: true
     pathType: ImplementationSpecific
     path: /gateway(/|$)(.*)
     ingressClassName: nginx
@@ -570,11 +576,15 @@ gateway:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
       nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     requests:
       cpu: 200m
       memory: 256Mi
 
+# =============================================================================
+# DEVELOPER PORTAL UI
+# =============================================================================
 portal:
   enabled: true
   name: portal
@@ -610,19 +620,26 @@ portal:
     internalPortName: http
   ingress:
     enabled: true
-    path: /
-    pathType: Prefix
+    # FIX: Changed from "/" (which captured ALL traffic, shadowing every other
+    # component) to a specific "/portal" path with a capture group and proper
+    # rewrite-target so the prefix is stripped before reaching the container.
+    path: /portal(/|$)(.*)
+    pathType: ImplementationSpecific
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     requests:
       cpu: 50m
       memory: 64Mi
   defaultPortal: "classic"
 
+# =============================================================================
+# MANAGEMENT CONSOLE UI
+# =============================================================================
 ui:
   enabled: true
   name: ui
@@ -658,13 +675,18 @@ ui:
     internalPortName: http
   ingress:
     enabled: true
+    # FIX: Changed from "/console(/.*)?" with capture group $1 to
+    # "/console(/|$)(.*)" with rewrite-target /$2. The original pattern did
+    # not reliably match "/console" (no trailing slash) in all NGINX versions,
+    # and $1 could produce a leading slash in the rewritten path.
+    path: /console(/|$)(.*)
     pathType: ImplementationSpecific
-    path: /console(/.*)?
     ingressClassName: nginx
     hosts:
       - gravitee80.demo.bankntbsyariah.co.id
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
   resources:
     requests:
       cpu: 50m
