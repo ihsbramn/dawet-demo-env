@@ -9,7 +9,7 @@
 grafana:
   image:
     repository: ihsbramn/grafana-custom
-    tag: 0.0.2
+    tag: 0.0.3
   enabled: true
   replicas: 1
 
