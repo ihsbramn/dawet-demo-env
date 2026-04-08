@@ -7,11 +7,11 @@
 
 # ── Grafana ──────────────────────────────────────────────────────────────────
 grafana:
-  enabled: true
-  replicas: 1
   image:
     repository: ihsbramn/grafana-custom
     tag: 0.0.1
+  enabled: true
+  replicas: 1
 
   adminUser: admin
   adminPassword: admin-demo-123
