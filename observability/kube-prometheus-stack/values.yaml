@@ -13,6 +13,10 @@ grafana:
   enabled: true
   replicas: 1
 
+  env:
+    GF_PATHS_PLUGINS: /var/lib/grafana-plugins
+    GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: agent-anna
+
   adminUser: admin
   adminPassword: admin-demo-123
 
