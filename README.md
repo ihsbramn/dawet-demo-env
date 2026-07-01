@@ -130,16 +130,16 @@ Most services are available as NodePorts for simplicity. Gravitee uses the newly
 | n8n | **30520** | `http://<NODE_IP>:30520` |
 | OTel Demo | **30800** | `http://<NODE_IP>:30800` |
 
-### Gravitee Ingress (via gravitee80.demo.bankntbsyariah.co.id:30080)
+### Gravitee Ingress (via gravitee80.demo.xxx.co.id:30080)
 
 To access Gravitee, ensure `gravitee80.demo.bankntbsyariah.co.id` resolves to your `<NODE_IP>`.
 
 | Component | Ingress Path | URL |
 |-----------|--------------|-----|
-| Management Console | `/console` | `http://gravitee80.demo.bankntbsyariah.co.id:30080/console` |
-| Developer Portal | `/` | `http://gravitee80.demo.bankntbsyariah.co.id:30080/` |
-| Management API | `/management` | `http://gravitee80.demo.bankntbsyariah.co.id:30080/management` |
-| Gateway | `/gateway` | `http://gravitee80.demo.bankntbsyariah.co.id:30080/gateway` |
+| Management Console | `/console` | `http://gravitee80.demo.xxx.co.id:30080/console` |
+| Developer Portal | `/` | `http://gravitee80.demo.xxx.co.id:30080/` |
+| Management API | `/management` | `http://gravitee80.demo.xxx.co.id:30080/management` |
+| Gateway | `/gateway` | `http://gravitee80.demo.xxx.co.id:30080/gateway` |
 
 ## ✅ Validate
 
