@@ -55,7 +55,7 @@ singleBinary:
       memory: 1Gi
   persistence:
     enabled: true
-    storageClass: local-path
+    storageClass: hostpath
     size: 2Gi
 
 # Disable all distributed components
