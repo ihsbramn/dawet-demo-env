@@ -28,7 +28,7 @@ volume:
   enabled: true
   accessMode: ReadWriteOnce
   size: 5Gi
-  storageClassName: "host"
+  storageClassName: "hostpath"
 
 resources:
   requests:
