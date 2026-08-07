@@ -21,7 +21,7 @@ grafana:
   adminPassword: admin-demo-123
 
   forceDeployDashboards: true
-  # Grafana runs as uid 472 — root init container chowns the local-path volume
+  # Grafana runs as uid 472 — root init container chowns the hostpath volume
   initChownData:
     enabled: false
     securityContext:
@@ -38,7 +38,7 @@ grafana:
 
   persistence:
     enabled: false
-    storageClassName: local-path
+    storageClassName: hostpath
     size: 2Gi
 
   ## Grafana.ini — use PostgreSQL as the session/config database
@@ -111,7 +111,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: local-path
+          storageClassName: hostpath
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
